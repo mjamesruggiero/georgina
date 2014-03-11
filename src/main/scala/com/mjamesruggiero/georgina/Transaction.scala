@@ -7,4 +7,10 @@ class TransactionSet(transactions: List[Transaction]) {
     val amounts = transactions.map(_.amount)
     amounts.sum / amounts.length
   }
+
+  def amountBySpecies = {
+    transactions.groupBy(_.species).map(
+      { case  (name, xs) => (name, xs.map(_.amount).sum ) } 
+    )
+  }
 }

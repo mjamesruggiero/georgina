@@ -23,4 +23,15 @@ class TransactionSpec extends ScalatraSuite with FunSuite {
     val tSet = new TransactionSet(trans)
     tSet.averageAmount should equal(3.755)
   }
+
+  test("Transaction set can get amount by species") {
+    val trans = List(
+      Transaction("2013-12-13", "debit", 100.00, "Amazon.com"),
+      Transaction("2013-12-13", "debit", 200.00, "Amazon.com"),
+      Transaction("2013-12-13", "asset", 1000.00, "Big Company")
+    )
+    val tSet = new TransactionSet(trans)
+    tSet.amountBySpecies("debit") should equal(300.00)
+    tSet.amountBySpecies("asset") should equal(1000.00)
+  }
 }
