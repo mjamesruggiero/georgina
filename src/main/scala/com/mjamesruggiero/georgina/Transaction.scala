@@ -13,4 +13,10 @@ class TransactionSet(transactions: List[Transaction]) {
       { case  (name, xs) => (name, xs.map(_.amount).sum ) } 
     )
   }
+
+  def averageSpend: Double = {
+    val amount = amountBySpecies("debit")
+    val count = transactions.filter(_.species == "debit").length
+    amount / count
+  }
 }
