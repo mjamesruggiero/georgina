@@ -46,4 +46,16 @@ class TransactionSpec extends ScalatraSuite with FunSuite {
     val tSet = new TransactionSet(trans)
     tSet.averageSpend should equal(200.00)
   }
+
+  test("Transaction set can get standard deviation") {
+    val trans = List(
+      Transaction("2013-12-13", "debit", 100.00, "Amazon.com"),
+      Transaction("2013-12-13", "debit", 200.00, "Amazon.com"),
+      Transaction("2013-12-13", "debit", 300.00, "Amazon.com"),
+      Transaction("2013-12-13", "asset", 1000.00, "Big Company"),
+      Transaction("2013-12-13", "asset", 2000.00, "Big Company")
+    )
+    val tSet = new TransactionSet(trans)
+    tSet.standardDeviation("debit") should equal(81.64965809277261)
+  }
 }

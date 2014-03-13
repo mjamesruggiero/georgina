@@ -14,9 +14,28 @@ class TransactionSet(transactions: List[Transaction]) {
     )
   }
 
-  def averageSpend: Double = {
-    val amount = amountBySpecies("debit")
-    val count = transactions.filter(_.species == "debit").length
-    amount / count
+  def average(species: String): Double = {
+    val count = transactions.filter(_.species == species).length
+    amountBySpecies(species) / count
+  }
+
+  def averageSpend = average("debit")
+
+  def standardDeviation(species: String): Double = {
+    def mean(values: List[Double]) = {
+      if(values.length < 0) 0 else values.sum / values.length
+    }
+
+    def variance(values: List[Double]) = {
+      val mu = mean(values)
+      val deviations = for {
+        v <- values
+        dev = (v - mu) * (v - mu)
+      } yield dev
+      mean(deviations)
+    }
+
+    val values = transactions.filter(_.species == species).map(_.amount)
+    math.sqrt(variance(values))
   }
 }
