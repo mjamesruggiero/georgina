@@ -3,6 +3,7 @@ package com.mjamesruggiero.georgina
 case class Transaction(date: String, species: String, amount: Double, description: String)
 
 class TransactionSet(transactions: List[Transaction]) {
+
   def averageAmount: Double = {
     val amounts = transactions.map(_.amount)
     amounts.sum / amounts.length
@@ -15,7 +16,7 @@ class TransactionSet(transactions: List[Transaction]) {
   }
 
   def average(species: String): Double = {
-    val count = transactions.filter(_.species == species).length
+    val count = withSpecies(species).length
     amountBySpecies(species) / count
   }
 
@@ -37,5 +38,17 @@ class TransactionSet(transactions: List[Transaction]) {
 
     val values = transactions.filter(_.species == species).map(_.amount)
     math.sqrt(variance(values))
+  }
+
+  def withDescription(description: String) : List[Transaction] = {
+    transactions.filter(_.description == description)
+  }
+
+  def withSpecies(species: String): List[Transaction] = {
+    transactions.filter(_.species == species)
+  }
+
+  def debits: List[Transaction] = {
+    withSpecies("debit")
   }
 }
