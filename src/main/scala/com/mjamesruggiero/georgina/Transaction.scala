@@ -1,6 +1,8 @@
 package com.mjamesruggiero.georgina
 
-case class Transaction(date: String, species: String, amount: Double, description: String)
+import org.joda.time.DateTime
+
+case class Transaction(date: DateTime, species: String, amount: Double, description: String)
 
 class TransactionSet(transactions: List[Transaction]) {
 
@@ -51,4 +53,6 @@ class TransactionSet(transactions: List[Transaction]) {
   def debits: List[Transaction] = {
     withSpecies("debit")
   }
+
+  def byDate = transactions.groupBy(_.date)
 }

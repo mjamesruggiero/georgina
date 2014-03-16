@@ -3,34 +3,37 @@ package com.mjamesruggiero.georgina
 import com.mjamesruggiero.georgina.Transaction._
 import org.scalatra.test.scalatest._
 import org.scalatest.FunSuite
+import org.joda.time.DateTime
 
 class TransactionSpec extends ScalatraSuite with FunSuite {
+  val tDate = DateTime.parse("2013-12-13")
+
   test("Transaction behaves like a transaction") {
-    val t = Transaction("2013-12-13", "debit", 100.00, "Amazon.com")
+    val t = Transaction(tDate, "debit", 100.00, "Amazon.com")
     t.species should equal("debit")
     t.amount should equal(100.00)
     t.description should equal("Amazon.com")
-    t.date should equal("2013-12-13")
+    t.date should equal(tDate)
   }
 
   test("#averageAmount returns average amount") {
     val tSet = new TransactionSet(
       List(
-        Transaction("2013-12-13", "debit", 1.00, "Amazon.com"),
-        Transaction("2013-12-13", "debit", 2.00, "Amazon.com"),
-        Transaction("2013-12-13", "debit", 3.00, "Amazon.com"),
-        Transaction("2013-12-13", "debit", 9.02, "Amazon.com")
+        Transaction(tDate, "debit", 1.00, "Amazon.com"),
+        Transaction(tDate, "debit", 2.00, "Amazon.com"),
+        Transaction(tDate, "debit", 3.00, "Amazon.com"),
+        Transaction(tDate, "debit", 9.02, "Amazon.com")
       )
     )
     tSet.averageAmount should equal(3.755)
   }
 
   val transactions = List(
-      Transaction("2013-12-13", "debit", 100.00, "Amazon.com"),
-      Transaction("2013-12-13", "debit", 200.00, "Amazon.com"),
-      Transaction("2013-12-13", "asset", 1000.00, "Big Company"),
-      Transaction("2013-12-13", "asset", 1000.00, "Big Company"),
-      Transaction("2013-12-13", "asset", 2000.00, "Big Company")
+      Transaction(tDate, "debit", 100.00, "Amazon.com"),
+      Transaction(tDate, "debit", 200.00, "Amazon.com"),
+      Transaction(tDate, "asset", 1000.00, "Big Company"),
+      Transaction(tDate, "asset", 1000.00, "Big Company"),
+      Transaction(tDate, "asset", 2000.00, "Big Company")
   )
 
   test("#amountBySpecies returns amount by species") {
@@ -59,4 +62,16 @@ class TransactionSpec extends ScalatraSuite with FunSuite {
     val tSet = new TransactionSet(transactions)
     tSet.debits.map(_.amount) should equal(List(100., 200.0))
   }
+
+  test("#byDate groups by date") {
+    val january = DateTime.parse("2014-01-01")
+    val datedTrans = List(
+        Transaction(DateTime.parse("2013-12-01"), "debit", 100.00, "Amazon.com"),
+        Transaction(january, "debit", 200.00, "Amazon.com"),
+        Transaction(january, "asset", 1000.00, "Big Company")
+    )
+    val tSet = new TransactionSet(datedTrans)
+    tSet.byDate(january).map(_.amount).sum should equal(1200.0)
+  }
+
 }
