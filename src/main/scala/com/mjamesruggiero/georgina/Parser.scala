@@ -1,15 +1,26 @@
 package com.mjamesruggiero.georgina
 
 class Parser(raw: String) {
-  val quotePattern = "\"".r
-  val leadingSignPattern = """-""".r
+  def parse = {
+    val quoteless = withoutQuotes(raw)
 
-  def withoutQuotes = quotePattern.replaceAllIn(raw, "")
-  def description = withoutQuotes.split(",").last
-  def date = withoutQuotes.split(",")(0)
-  def amount = {
-    val amount = withoutQuotes.split(",")(1)
-    leadingSignPattern.replaceAllIn(amount, "")
+    val splitLines = quoteless.split(",") match {
+      case Array(date, rawAmount, _, _, description) => (date, rawAmount, description)
+      case _ => quoteless
+    }
+
+    splitLines match {
+      case (date, rawAmount, description) => Map("date" -> date, "amount" -> fixNegativeAmount(rawAmount.toString), "description" -> description)
+      case _ => Map("date" -> None, "amount" -> None, "description" -> None)
+    }
   }
+
+  def withoutQuotes(input: String): String  = {
+    val quotePattern = "\"".r
+    quotePattern.replaceAllIn(raw, "")
+  }
+
+  def fixNegativeAmount(rawAmount: String) =
+    if (rawAmount.startsWith("-")) rawAmount.drop(1) else rawAmount
 }
 
