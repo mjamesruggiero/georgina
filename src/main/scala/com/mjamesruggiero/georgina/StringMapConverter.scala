@@ -5,12 +5,14 @@ import org.joda.time.format.DateTimeFormat
 
 class StringMapConverter(input: Map[String, String]) {
   def convert: Transaction = {
+
     val date = convertDate(input("date"))
     val amount = toDouble(input("amount")).getOrElse(0.00)
-    Transaction(DateTime.parse("2013-03-29"), input("species"), amount, input("description"))
+
+    Transaction(date.getOrElse(DateTime.now), input("species"), amount, input("description"))
   }
 
-  def toDouble(s: String):Option[Double] = {
+  private def toDouble(s: String):Option[Double] = {
     try {
       Some(s.toDouble)
     } catch {
@@ -18,8 +20,8 @@ class StringMapConverter(input: Map[String, String]) {
     }
   }
 
-  def convertDate(datestring: String): Option[DateTime] = {
-    val pattern = "dd/MM/yyyy"
+  private def convertDate(datestring: String): Option[DateTime] = {
+    val pattern = "MM/dd/yyyy"
     try {
       Some(DateTime.parse(datestring, DateTimeFormat.forPattern(pattern)))
     } catch {
