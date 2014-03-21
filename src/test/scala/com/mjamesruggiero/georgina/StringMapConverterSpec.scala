@@ -10,7 +10,7 @@ class StringMapConverterSpec extends ScalatraSuite with FunSuite {
                     "amount" -> "100.00",
                     "description" -> "FAKE DESCRIPTION",
                     "species" -> "debit")
-  val converted = new StringMapConverter(testMap).convert
+  val converted = new StringMapConverter(testMap).convert.get
 
   test("#convert can build a date") {
     converted.date should equal(DateTime.parse("2013-03-29"))
@@ -26,5 +26,14 @@ class StringMapConverterSpec extends ScalatraSuite with FunSuite {
 
   test("#convert can build a description") {
     converted.description should equal("FAKE DESCRIPTION")
+  }
+
+  test("bad map returns None") {
+    val badMap = Map("date" -> "",
+                    "amount" -> "",
+                    "description" -> "",
+                    "species" -> "")
+    val failedConversion = new StringMapConverter(badMap).convert
+    failedConversion should equal(None)
   }
 }
