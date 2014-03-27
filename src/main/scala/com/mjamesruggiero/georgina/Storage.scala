@@ -10,14 +10,25 @@ object Storage {
     ConnectionPool.singleton("jdbc:h2:mem:hello", "user", "pass")
     implicit val session = AutoSession
 
-    sql"""CREATE TABLE members(id serial NOT NULL PRIMARY KEY, name VARCHAR(64), created_at TIMESTAMP NOT NULL)""".
-      execute.apply()
+    sql"""CREATE TABLE users(id serial NOT NULL PRIMARY KEY, 
+                               email VARCHAR(64), 
+                               password VARCHAR(64), 
+                               first_name VARCHAR(64), 
+                               last_name VARCHAR(64), 
+                               created_at TIMESTAMP NOT NULL)""".execute.apply()
 
-    Seq("Alice", "Ted", "Bob") foreach { name =>
-      sql"INSERT INTO members(name, created_at) VALUES (${name}, current_timestamp)".update.apply() 
+    val testUsers = Seq(("passwORD", "alice@example.com", "Alice", "Jones"), 
+                        ("p@ssw4rd", "ted@example.com",   "Ted",   "Smith"), 
+                        ("P@ZZwerD", "bob@example.com",   "Bob",   "Huang")) 
+    
+    testUsers foreach { xs =>
+      xs match {
+        case (password, email, first_name, last_name) => sql"""INSERT INTO users(password, email, first_name, last_name, created_at) 
+                                                              VALUES (${password}, ${email}, ${first_name}, ${last_name}, current_timestamp)""".update.apply() 
+      }
     }
 
-    val entities: List[Map[String, Any]] = sql"SELECT * FROM members".map(_.toMap).list.apply()
+    val entities: List[Map[String, Any]] = sql"SELECT * FROM users".map(_.toMap).list.apply()
     entities
   }
 }
