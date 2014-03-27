@@ -22,6 +22,7 @@ object GeorginaBuild extends Build {
       scalaVersion := ScalaVersion,
       resolvers += Classpaths.typesafeReleases,
       libraryDependencies ++= Seq(
+        "com.google.guava"        % "guava"                      % "14.0-rc3",
         "org.scalatra"            %% "scalatra"                  % ScalatraVersion,
         "org.scalatra"            %% "scalatra-scalate"          % ScalatraVersion,
         "org.scalatra"            %% "scalatra-scalatest"        % "2.2.2" % "test",
