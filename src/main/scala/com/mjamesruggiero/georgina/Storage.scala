@@ -6,7 +6,7 @@ import SQLInterpolation._
 object Storage {
 
   def init: List[Map[String, Any]] = {
-    Class.forName("org.h2.Driver")
+    Class.forName("com.mysql.jdbc.Driver")
     ConnectionPool.singleton("jdbc:h2:mem:hello", "user", "pass")
     implicit val session = AutoSession
 
