@@ -3,14 +3,14 @@ package com.mjamesruggiero.georgina
 import org.scalatra._
 import scalate.ScalateSupport
 
-class GeorginaServlet extends GeorginaStack {
+class GeorginaServlet extends GeorginaStack with ScalateSupport {
+
+  val users = Storage.init
+  val names = users.map(_("FIRST_NAME")).mkString(", ")
 
   get("/") {
-    <html>
-      <body>
-        <h1>This is georgina</h1>
-        <p><a href="hello-scalate">Scalate</a></p>
-      </body>
-    </html>
+    contentType="text/html"
+
+    ssp("/georgina/index", "title" -> "Georgina", "names" -> names)
   }
 }

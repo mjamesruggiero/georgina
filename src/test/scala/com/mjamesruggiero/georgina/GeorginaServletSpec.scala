@@ -9,7 +9,7 @@ class GeorginaServletSpec extends ScalatraSuite with FunSuite {
   test("simple GET") {
     get("/") {
       status should equal (200)
-      body should include ("georgina")
+      body should include ("Georgina")
     }
   }
 }
