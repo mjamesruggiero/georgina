@@ -27,6 +27,8 @@ object GeorginaBuild extends Build {
         "org.scalatra"            %% "scalatra-scalatest"        % "2.2.2" % "test",
         "org.scalikejdbc"         %% "scalikejdbc"               % "1.7.4",
         "org.scalikejdbc"         %% "scalikejdbc-interpolation" % "1.7.4",
+        "io.argonaut"             %% "argonaut"                  % "6.0.3",
+        "org.scalaz"              %% "scalaz-core"               % "7.0.6",
         "com.google.guava"        % "guava"                      % "14.0-rc3",
         "com.h2database"          %  "h2"                        % "[1.3,)",
         "mysql"                   % "mysql-connector-java"       % "[5.1,)",
