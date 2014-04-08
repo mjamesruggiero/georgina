@@ -44,15 +44,10 @@ class JsonParsersSpec extends ScalatraSuite with FunSuite {
       ]
     }
     """
-    val returned = testJson.decodeOption[TransactionPost] match {
-      case(Some(tp)) => Some(tp)
-      case _ => None
-    }
-    val lines = for (t <- returned) yield (t.lines.head)
-    val properties = for (l <- lines) yield (l.description, l.amount, l.date)
-
-    properties.get._3 should equal("2014-04-07")
-    properties.get._2 should equal(Some(99.99))
-    properties.get._1 should equal("Target")
+    val optionJson = Parse.decodeOption[TransactionPost](testJson)
+    val transactionsList = optionJson.get.lines
+    transactionsList.head.description should equal("Target")
+    transactionsList.head.amount should equal(Some(99.99))
+    transactionsList.head.date should equal("2014-04-07")
   }
 }
