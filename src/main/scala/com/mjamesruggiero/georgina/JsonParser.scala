@@ -14,4 +14,7 @@ case class Line(
 object JSONParsers {
   implicit def LineCodecJson =
     casecodec3(Line.apply, Line.unapply)("date", "amount", "description")
+
+  implicit def TransactionPostJsonCodec =
+    casecodec1(TransactionPost.apply, TransactionPost.unapply)("transactions")
 }
