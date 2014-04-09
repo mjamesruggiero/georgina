@@ -12,4 +12,35 @@ class GeorginaServletSpec extends ScalatraSuite with FunSuite {
       body should include ("Georgina")
     }
   }
+
+  test("POST /submit fails with bad JSON") {
+    val input = """{"foo":[ {"bar":"baz" }]}"""
+    post("submit", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
+      status should equal(500)
+      response.body should endWith ("unable to parse JSON")
+    }
+  }
+
+  test("POST /submit succeeds with bad JSON") {
+    val input = """
+    {
+      "transactions":
+      [
+        {
+          "date":"2014-04-07",
+          "amount": 99.99,
+          "description":"PG & E"
+        },
+        {
+          "date":"2014-04-04",
+          "amount": 20.00,
+          "description":"McDonald's"
+        }
+      ]
+    }
+    """
+    post("submit", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
+      status should equal(200)
+    }
+  }
 }
