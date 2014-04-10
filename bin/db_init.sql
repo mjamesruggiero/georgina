@@ -13,6 +13,7 @@ CREATE TABLE users (id int(11) NOT NULL AUTO_INCREMENT,
 DROP TABLE IF EXISTS transactions;
 CREATE TABLE transactions (
   id int(11) NOT NULL AUTO_INCREMENT,
+  date date,
   species varchar(255) DEFAULT NULL,
   description text COLLATE utf8_unicode_ci NOT NULL,
   amount float DEFAULT NULL,

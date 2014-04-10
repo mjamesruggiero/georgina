@@ -1,5 +1,4 @@
-<%@ val names: String %>
 <%@ val title: String %>
 
-<p>The user names are: <%= names %></p>
+<p>This is just a placeholder.</p>
 

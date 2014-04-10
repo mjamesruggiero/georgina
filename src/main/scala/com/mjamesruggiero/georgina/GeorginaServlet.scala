@@ -3,17 +3,16 @@ package com.mjamesruggiero.georgina
 import org.scalatra._
 import scalate.ScalateSupport
 import argonaut._, Argonaut._
+import com.mjamesruggiero.georgina.Storage
 
 class GeorginaServlet extends GeorginaStack with ScalateSupport {
 
   import com.mjamesruggiero.georgina.JSONParsers._
-  val users = Storage.init
-  val names = users.map(_("FIRST_NAME")).mkString(", ")
 
   get("/") {
     contentType="text/html"
 
-    ssp("/georgina/index", "title" -> "Georgina", "names" -> names)
+    ssp("/georgina/index", "title" -> "Georgina")
   }
 
   post("/submit") {
@@ -24,7 +23,7 @@ class GeorginaServlet extends GeorginaStack with ScalateSupport {
             s"""unable to parse JSON"""
           )
         }
-        case (l:List[Line]) => Ok("thanks!")
+        case (l:List[Line]) => Storage.storeTransaction(JSONParsers.buildTransaction(l.head))
       }
       case _ => {
         InternalServerError(body="""unable to parse JSON""")
