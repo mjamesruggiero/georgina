@@ -21,7 +21,7 @@ class GeorginaServletSpec extends ScalatraSuite with FunSuite {
     }
   }
 
-  test("POST /submit succeeds with bad JSON") {
+  test("POST /submit succeeds with good JSON") {
     val input = """
     {
       "transactions":
@@ -41,6 +41,24 @@ class GeorginaServletSpec extends ScalatraSuite with FunSuite {
     """
     post("submit", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
       status should equal(200)
+    }
+  }
+
+  test("POST /submit fails with bad record") {
+    val input = """
+    {
+      "transactions":
+      [
+        {
+          "date":"2014-04-07",
+          "amount": "BAD RECORD",
+          "description":"PG & E"
+        }
+      ]
+    }
+    """
+    post("submit", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
+      status should equal(500)
     }
   }
 }
