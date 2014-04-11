@@ -2,31 +2,21 @@ package com.mjamesruggiero.georgina
 
 import scalikejdbc._
 import scalikejdbc.SQLInterpolation._
+import scalikejdbc.config._
+
+case class QueryException(message:String) extends Exception(message)
 
 object Storage {
-  def storeTransaction(t: Transaction): Boolean = {
 
-    // put this in an implicit or pass it
-    Class.forName("com.mysql.jdbc.Driver")
-    ConnectionPool.singleton("jdbc:h2:mem:hello", "user", "pass")
-    implicit val session = AutoSession
-
-    // this is a placeholder until we install Mockito
-    // bootstrap in-memory database
-    sql"""CREATE TABLE transactions (
-          id int(11) NOT NULL AUTO_INCREMENT,
-          date date,
-          species varchar(255) DEFAULT NULL,
-          description text,
-          amount float DEFAULT NULL,
-          PRIMARY KEY (id));""".execute.apply()
+  def storeTransaction(t: Transaction)(implicit session: DBSession = AutoSession) = {
+    DBsWithEnv("development").setupAll()
+    ConnectionPool('default).borrow()
 
     t match {
       case Transaction(date, species, amt, desc) => {
-        sql"""INSERT INTO transactions(id, date, species, description, amount) VALUES (null, ${date}, ${species}, ${desc}, ${amt})""".update.apply() 
-        true
+        sql"""INSERT INTO transactions(id, date, species, description, amount)
+              VALUES (null, ${date}, ${species}, ${desc}, ${amt})""".execute.apply()
       }
-      case _ => false
     }
   }
 }

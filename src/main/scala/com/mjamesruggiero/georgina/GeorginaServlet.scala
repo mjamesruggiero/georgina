@@ -5,6 +5,8 @@ import scalate.ScalateSupport
 import argonaut._, Argonaut._
 import com.mjamesruggiero.georgina.Storage
 
+case class ServletException(message: String) extends Exception(message)
+
 class GeorginaServlet extends GeorginaStack with ScalateSupport {
 
   import com.mjamesruggiero.georgina.JSONParsers._
@@ -23,7 +25,9 @@ class GeorginaServlet extends GeorginaStack with ScalateSupport {
             s"""unable to parse JSON"""
           )
         }
-        case (l:List[Line]) => Storage.storeTransaction(JSONParsers.buildTransaction(l.head))
+        case (l:List[Line]) => {
+          Storage.storeTransaction(JSONParsers.buildTransaction(l.head))
+        }
       }
       case _ => {
         InternalServerError(body="""unable to parse JSON""")
