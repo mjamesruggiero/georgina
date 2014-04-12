@@ -1,9 +1,9 @@
-package com.mjamesruggiero.georgina
+package com.mjamesruggiero.georgina.models
 
-import com.mjamesruggiero.georgina.Transaction._
-import org.scalatra.test.scalatest._
-import org.scalatest.FunSuite
+import com.mjamesruggiero.georgina.models._
 import org.joda.time.DateTime
+import org.scalatest.FunSuite
+import org.scalatra.test.scalatest._
 
 class TransactionSpec extends ScalatraSuite with FunSuite {
   val tDate = DateTime.parse("2013-12-13")

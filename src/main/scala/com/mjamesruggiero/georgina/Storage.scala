@@ -1,5 +1,6 @@
 package com.mjamesruggiero.georgina
 
+import com.mjamesruggiero.georgina.models._
 import scalikejdbc._
 import scalikejdbc.SQLInterpolation._
 import scalikejdbc.config._

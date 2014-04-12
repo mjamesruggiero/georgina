@@ -2,6 +2,7 @@ package com.mjamesruggiero.georgina
 
 import argonaut._, Argonaut._
 import org.joda.time.DateTime
+import com.mjamesruggiero.georgina.models._
 
 case class TransactionPost(lines: List[Line])
 

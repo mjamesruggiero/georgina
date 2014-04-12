@@ -3,7 +3,7 @@ package com.mjamesruggiero.georgina
 import org.scalatra._
 import scalate.ScalateSupport
 import argonaut._, Argonaut._
-import com.mjamesruggiero.georgina.Storage
+import com.mjamesruggiero.georgina._
 
 case class ServletException(message: String) extends Exception(message)
 

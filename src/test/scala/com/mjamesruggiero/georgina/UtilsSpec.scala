@@ -1,6 +1,6 @@
 package com.mjamesruggiero.georgina
 
-import com.mjamesruggiero.georgina._
+import com.mjamesruggiero.georgina.models._
 import org.scalatra.test.scalatest._
 import org.scalatest.FunSuite
 import org.joda.time.DateTime

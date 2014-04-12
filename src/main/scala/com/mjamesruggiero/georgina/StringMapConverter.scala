@@ -1,5 +1,6 @@
 package com.mjamesruggiero.georgina
 
+import com.mjamesruggiero.georgina.models._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 

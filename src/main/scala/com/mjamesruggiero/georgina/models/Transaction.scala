@@ -1,4 +1,4 @@
-package com.mjamesruggiero.georgina
+package com.mjamesruggiero.georgina.models
 
 import org.joda.time.DateTime
 

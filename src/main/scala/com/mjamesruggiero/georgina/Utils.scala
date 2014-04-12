@@ -1,9 +1,9 @@
 package com.mjamesruggiero.georgina
 
-import java.security.MessageDigest
-import com.mjamesruggiero.georgina.Transaction._
-import org.joda.time.format.DateTimeFormat
 import com.google.common.hash._
+import com.mjamesruggiero.georgina.models._
+import java.security.MessageDigest
+import org.joda.time.format.DateTimeFormat
 
 object Utils {
   def transactionHash(t: Transaction): String = {
