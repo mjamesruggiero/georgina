@@ -18,7 +18,7 @@ class GeorginaServlet extends GeorginaStack with ScalateSupport {
   }
 
   post("/submit") {
-    request.body.decodeOption[TransactionPost] match {
+    request.body.decodeOption[Report] match {
       case Some(t) => t.lines match {
         case Nil => {
           InternalServerError(body =

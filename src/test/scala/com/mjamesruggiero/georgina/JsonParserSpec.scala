@@ -44,7 +44,7 @@ class JsonParsersSpec extends ScalatraSuite with FunSuite {
       ]
     }
     """
-    val optionJson = Parse.decodeOption[TransactionPost](testJson)
+    val optionJson = Parse.decodeOption[Report](testJson)
     val transactionsList = optionJson.get.lines
     transactionsList.head.description should equal("Target")
     transactionsList.head.amount should equal(Some(99.99))
@@ -53,7 +53,7 @@ class JsonParsersSpec extends ScalatraSuite with FunSuite {
 
   test("bad JSON returns none") {
     val testJson = """ { "foo": [1, 2, 3] }"""
-    val isValid = Parse.decodeOption[TransactionPost](testJson) match {
+    val isValid = Parse.decodeOption[Report](testJson) match {
       case Some(t) => true
       case _ => false
     }

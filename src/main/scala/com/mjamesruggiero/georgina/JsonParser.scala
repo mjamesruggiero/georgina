@@ -4,7 +4,7 @@ import argonaut._, Argonaut._
 import org.joda.time.DateTime
 import com.mjamesruggiero.georgina.models._
 
-case class TransactionPost(lines: List[Line])
+case class Report(lines: List[Line])
 
 // i.e "just a line in a file"
 case class Line(
@@ -17,8 +17,8 @@ object JSONParsers {
   implicit def LineCodecJson =
     casecodec3(Line.apply, Line.unapply)("date", "amount", "description")
 
-  implicit def TransactionPostJsonCodec =
-    casecodec1(TransactionPost.apply, TransactionPost.unapply)("transactions")
+  implicit def ReportJsonCodec =
+    casecodec1(Report.apply, Report.unapply)("transactions")
 
   def buildTransaction(line: Line): Transaction = {
     val parsedDate = DateTime.parse(line.date)
