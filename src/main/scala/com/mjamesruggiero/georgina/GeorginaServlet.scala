@@ -26,7 +26,9 @@ class GeorginaServlet extends GeorginaStack with ScalateSupport {
           )
         }
         case (l:List[Line]) => {
-          Storage.storeTransaction(JSONParsers.buildTransaction(l.head))
+          val transaction = JSONParsers.buildTransaction(l.head)
+          if(Storage.existingAlready(transaction) == Some(0))
+            Storage.storeTransaction(transaction)
         }
       }
       case _ => {

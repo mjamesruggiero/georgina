@@ -20,5 +20,21 @@ object Storage {
       }
     }
   }
+
+  def existingAlready(t: Transaction)(implicit session: DBSession = AutoSession): Int = {
+    DBsWithEnv("development").setupAll()
+    ConnectionPool('default).borrow()
+    val returned: Option[Int] = sql"""SELECT COUNT(*) AS count
+          FROM transactions
+          WHERE date=${t.date}
+          AND species=${t.species}
+          AND description=${t.description}
+          AND amount=${t.amount}""".map(rs => rs.int("count")).single.apply()
+
+      returned match {
+        case Some(count) => count
+        case _ => 0
+    }
+  }
 }
 
