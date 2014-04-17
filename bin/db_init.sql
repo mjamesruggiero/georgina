@@ -16,6 +16,6 @@ CREATE TABLE transactions (
   date date,
   species varchar(255) DEFAULT NULL,
   description text COLLATE utf8_unicode_ci NOT NULL,
-  amount float DEFAULT NULL,
+  amount DECIMAL(6,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB CHARSET=utf8;
