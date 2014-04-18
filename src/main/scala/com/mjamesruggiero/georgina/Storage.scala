@@ -5,18 +5,19 @@ import scalikejdbc.SQLInterpolation._
 import scalikejdbc._
 import org.joda.time.DateTime
 import scalikejdbc.config._
+import scalaz.Reader._
 
 case class QueryException(message:String) extends Exception(message)
 
 object Storage {
 
-  def initialize = {
-    DBsWithEnv("development").setupAll()
+  def initialize(env: String) = {
+    DBsWithEnv(env).setupAll()
     ConnectionPool('default).borrow()
   }
 
   def storeTransaction(t: Transaction)(implicit session: DBSession = AutoSession) = {
-    initialize
+    initialize("development")
 
     if(! existingAlready(t)) {
       t match {
@@ -29,7 +30,7 @@ object Storage {
   }
 
   def existingAlready(t: Transaction)(implicit session: DBSession = AutoSession): Boolean = {
-    initialize
+    initialize("development")
 
     val returned: Option[Int] = sql"""SELECT COUNT(*) AS count
           FROM transactions
@@ -45,7 +46,7 @@ object Storage {
   }
 
   def allTransactions(implicit session: DBSession = AutoSession): List[Transaction] = {
-    initialize
+    initialize("development")
 
     sql"SELECT id, date, species, amount, description FROM transactions ORDER BY id"
     .map {
