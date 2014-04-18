@@ -4,6 +4,7 @@ import org.scalatra._
 import scalate.ScalateSupport
 import argonaut._, Argonaut._
 import com.mjamesruggiero.georgina._
+import com.mjamesruggiero.georgina.models._
 
 case class ServletException(message: String) extends Exception(message)
 
@@ -15,6 +16,11 @@ class GeorginaServlet extends GeorginaStack with ScalateSupport {
     contentType="text/html"
 
     ssp("/georgina/index", "title" -> "Georgina")
+  }
+
+  get("/transactions") {
+    val ts = TransactionList(Storage.allTransactions)
+    Ok(ts.asJson)
   }
 
   post("/submit") {

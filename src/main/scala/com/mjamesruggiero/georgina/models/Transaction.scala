@@ -2,10 +2,14 @@ package com.mjamesruggiero.georgina.models
 
 import org.joda.time.DateTime
 
-case class Transaction(date: DateTime, species: String, amount: Double, description: String)
+case class Transaction(date: DateTime,
+species: String,
+amount: Double,
+description: String)
 
-class TransactionSet(transactions: List[Transaction]) {
+case class TransactionList(transactions: List[Transaction])
 
+class TransactionSet(val transactions: List[Transaction]) {
   def averageAmount: Double = {
     val amounts = transactions.map(_.amount)
     amounts.sum / amounts.length
@@ -13,7 +17,7 @@ class TransactionSet(transactions: List[Transaction]) {
 
   def amountBySpecies = {
     transactions.groupBy(_.species).map(
-      { case  (name, xs) => (name, xs.map(_.amount).sum ) } 
+      { case  (name, xs) => (name, xs.map(_.amount).sum ) }
     )
   }
 

@@ -3,6 +3,7 @@ package com.mjamesruggiero.georgina
 import com.mjamesruggiero.georgina.models._
 import scalikejdbc.SQLInterpolation._
 import scalikejdbc._
+import org.joda.time.DateTime
 import scalikejdbc.config._
 
 case class QueryException(message:String) extends Exception(message)
@@ -41,5 +42,18 @@ object Storage {
         case Some(count) => count > 0
         case _ => false
     }
+  }
+
+  def allTransactions(implicit session: DBSession = AutoSession): List[Transaction] = {
+    initialize
+
+    sql"SELECT id, date, species, amount, description FROM transactions order by id"
+    .map {
+      rs => Transaction(DateTime.parse(rs.string("date")),
+          rs.string("species"),
+          rs.string("amount").toDouble,
+          rs.string("description")
+        )
+    }.list.apply()
   }
 }
