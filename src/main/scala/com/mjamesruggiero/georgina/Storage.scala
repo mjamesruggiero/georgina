@@ -47,11 +47,11 @@ object Storage {
   def allTransactions(implicit session: DBSession = AutoSession): List[Transaction] = {
     initialize
 
-    sql"SELECT id, date, species, amount, description FROM transactions order by id"
+    sql"SELECT id, date, species, amount, description FROM transactions ORDER BY id"
     .map {
       rs => Transaction(DateTime.parse(rs.string("date")),
           rs.string("species"),
-          rs.string("amount").toDouble,
+          rs.double("amount"),
           rs.string("description")
         )
     }.list.apply()
