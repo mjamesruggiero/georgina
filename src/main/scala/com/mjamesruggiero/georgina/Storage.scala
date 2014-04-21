@@ -16,10 +16,10 @@ object Storage {
     ConnectionPool('default).borrow()
   }
 
-  def storeTransaction(t: Transaction)(implicit session: DBSession = AutoSession) = {
-    initialize("development")
+  def storeTransaction(env: String, t: Transaction)(implicit session: DBSession = AutoSession) = {
+    initialize(env)
 
-    if(! existingAlready(t)) {
+    if(! existingAlready(env, t)) {
       t match {
         case Transaction(date, species, amt, desc) => {
           sql"""INSERT INTO transactions(id, date, species, description, amount)
@@ -29,8 +29,8 @@ object Storage {
     }
   }
 
-  def existingAlready(t: Transaction)(implicit session: DBSession = AutoSession): Boolean = {
-    initialize("development")
+  def existingAlready(env: String, t: Transaction)(implicit session: DBSession = AutoSession): Boolean = {
+    initialize(env)
 
     val returned: Option[Int] = sql"""SELECT COUNT(*) AS count
           FROM transactions
@@ -45,8 +45,8 @@ object Storage {
     }
   }
 
-  def allTransactions(implicit session: DBSession = AutoSession): List[Transaction] = {
-    initialize("development")
+  def allTransactions(env: String)(implicit session: DBSession = AutoSession): List[Transaction] = {
+    initialize(env)
 
     sql"SELECT id, date, species, amount, description FROM transactions ORDER BY id"
     .map {

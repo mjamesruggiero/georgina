@@ -8,7 +8,7 @@ import com.mjamesruggiero.georgina.models._
 
 case class ServletException(message: String) extends Exception(message)
 
-class GeorginaServlet extends GeorginaStack with ScalateSupport {
+class GeorginaServlet(environment: String = "development")  extends GeorginaStack with ScalateSupport {
 
   import com.mjamesruggiero.georgina.JSONParsers._
 
@@ -19,7 +19,7 @@ class GeorginaServlet extends GeorginaStack with ScalateSupport {
   }
 
   get("/transactions") {
-    val ts = TransactionList(Storage.allTransactions)
+    val ts = TransactionList(Storage.allTransactions(environment))
     Ok(ts.asJson)
   }
 
@@ -33,7 +33,7 @@ class GeorginaServlet extends GeorginaStack with ScalateSupport {
         }
         case (l:List[Line]) => {
           l.map { t =>
-            Storage.storeTransaction(JSONParsers.buildTransaction(t))
+            Storage.storeTransaction(environment, JSONParsers.buildTransaction(t))
           }
         }
       }

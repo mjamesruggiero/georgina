@@ -7,6 +7,7 @@ import scalikejdbc._
 class ScalatraBootstrap extends LifeCycle with DatabaseClientInit {
   override def init(context: ServletContext) {
     configureDatabaseClient
-    context.mount(new GeorginaServlet, "/*")
+    val env = "development"
+    context.mount(new GeorginaServlet(env), "/*")
   }
 }

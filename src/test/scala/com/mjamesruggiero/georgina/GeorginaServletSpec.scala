@@ -4,7 +4,7 @@ import org.scalatra.test.scalatest._
 import org.scalatest.FunSuite
 
 class GeorginaServletSpec extends ScalatraSuite with FunSuite {
-  addServlet(classOf[GeorginaServlet], "/*")
+  addServlet(new GeorginaServlet("development"), "/*")
 
   test("index should return 200") {
     get("/") {
