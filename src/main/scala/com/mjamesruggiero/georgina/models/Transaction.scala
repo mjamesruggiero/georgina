@@ -7,9 +7,19 @@ species: String,
 amount: Double,
 description: String)
 
-case class TransactionList(transactions: List[Transaction])
+sealed trait Stats {
+  def averageAmount: Double
+  def amountBySpecies: Map[String, Double]
+  def average: Double
+  def averageSpend: Double
+  def standardDeviation: Double
+  def withDescription: List[Transaction]
+  def withSpecies: List[Transaction]
+  def debits: List[Transaction]
+  def byDate: scala.collection.immutable.Map[DateTime, List[Transaction]]
+}
 
-class TransactionSet(val transactions: List[Transaction]) {
+case class TransactionSet(transactions: List[Transaction]) {
   def averageAmount: Double = {
     val amounts = transactions.map(_.amount)
     amounts.sum / amounts.length

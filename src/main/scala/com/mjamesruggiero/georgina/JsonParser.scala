@@ -22,8 +22,8 @@ object JSONParsers {
   implicit def ReportJsonCodec =
     casecodec1(Report.apply, Report.unapply)("transactions")
 
-  implicit def TransactionListCodec: CodecJson[TransactionList]  =
-    casecodec1(TransactionList.apply, TransactionList.unapply)("transactions")
+  implicit def TransactionSetCodec: CodecJson[TransactionSet]  =
+    casecodec1(TransactionSet.apply, TransactionSet.unapply)("transactions")
 
   lazy val FULL_ISO8601_FORMAT = ISODateTimeFormat.dateTime
 
