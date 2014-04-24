@@ -12,12 +12,13 @@ case class Report(lines: List[Line])
 case class Line(
   date: String,
   amount: Option[Double],
+  category: String,
   description: String
 )
 
 object JSONParsers {
   implicit def LineCodecJson =
-    casecodec3(Line.apply, Line.unapply)("date", "amount", "description")
+    casecodec4(Line.apply, Line.unapply)("date", "amount", "category", "description")
 
   implicit def ReportJsonCodec =
     casecodec1(Report.apply, Report.unapply)("transactions")
@@ -34,15 +35,16 @@ object JSONParsers {
     implicitly[DecodeJson[String]].map(FULL_ISO8601_FORMAT.parseDateTime) setName "org.joda.time.DateTime"
 
   implicit def TransactionCodec: CodecJson[Transaction]  =
-    casecodec4(Transaction.apply, Transaction.unapply)(
+    casecodec5(Transaction.apply, Transaction.unapply)(
       "date",
       "species",
       "amount",
+      "category",
       "description"
     )
 
   def buildTransaction(line: Line): Transaction = {
     val parsedDate = DateTime.parse(line.date)
-    Transaction(parsedDate, "debit", line.amount.getOrElse(0.0), line.description)
+    Transaction(parsedDate, "debit", line.amount.getOrElse(0.0), line.category, line.description)
   }
 }

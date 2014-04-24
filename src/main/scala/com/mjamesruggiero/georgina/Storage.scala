@@ -21,9 +21,10 @@ object Storage {
 
     if(! existingAlready(env, t)) {
       t match {
-        case Transaction(date, species, amt, desc) => {
-          sql"""INSERT INTO transactions(id, date, species, description, amount)
-                VALUES (null, ${date}, ${species}, ${desc}, ${amt})""".execute.apply()
+        case Transaction(date, species, amt, cat, desc) => {
+          val newCat = new Categorizer(desc).categorize.c
+          sql"""INSERT INTO transactions(id, date, species, description, category, amount)
+                VALUES (null, ${date}, ${species}, ${desc}, ${newCat}, ${amt})""".execute.apply()
         }
       }
     }
@@ -53,6 +54,7 @@ object Storage {
       rs => Transaction(DateTime.parse(rs.string("date")),
           rs.string("species"),
           rs.double("amount"),
+          rs.string("category"),
           rs.string("description")
         )
     }.list.apply()

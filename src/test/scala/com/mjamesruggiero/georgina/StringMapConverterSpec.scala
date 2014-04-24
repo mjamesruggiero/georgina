@@ -8,6 +8,7 @@ import org.joda.time.DateTime
 class StringMapConverterSpec extends ScalatraSuite with FunSuite {
   val testMap = Map("date" -> "03/29/2013",
                     "amount" -> "100.00",
+                    "category" -> "unknown",
                     "description" -> "FAKE DESCRIPTION",
                     "species" -> "debit")
   val converted = new StringMapConverter(testMap).convert.get
@@ -32,6 +33,7 @@ class StringMapConverterSpec extends ScalatraSuite with FunSuite {
     val badMap = Map("date" -> "",
                     "amount" -> "",
                     "description" -> "",
+                    "category" -> "",
                     "species" -> "")
     val failedConversion = new StringMapConverter(badMap).convert
     failedConversion should equal(None)

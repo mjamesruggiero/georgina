@@ -5,6 +5,7 @@ import org.joda.time.DateTime
 case class Transaction(date: DateTime,
 species: String,
 amount: Double,
+category: String,
 description: String)
 
 sealed trait Stats {

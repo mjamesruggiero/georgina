@@ -14,6 +14,7 @@ class JsonParsersSpec extends ScalatraSuite with FunSuite {
         {
           "date":"2014-04-04", 
           "amount": 20.00, 
+          "category": "unknown",
           "description":"Amazon.com"
         }
     """
@@ -34,10 +35,12 @@ class JsonParsersSpec extends ScalatraSuite with FunSuite {
         {
           "date":"2014-04-07", 
           "amount": 99.99, 
+          "category": "unknown",
           "description":"Target"
         },
         {
           "date":"2014-04-04", 
+          "category": "unknown",
           "amount": 20.00, 
           "description":"Amazon.com"
         }
@@ -48,6 +51,7 @@ class JsonParsersSpec extends ScalatraSuite with FunSuite {
     val transactionsList = optionJson.get.lines
     transactionsList.head.description should equal("Target")
     transactionsList.head.amount should equal(Some(99.99))
+    transactionsList.head.category should equal("unknown")
     transactionsList.head.date should equal("2014-04-07")
   }
 

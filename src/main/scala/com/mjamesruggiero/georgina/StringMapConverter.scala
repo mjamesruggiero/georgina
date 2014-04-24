@@ -11,7 +11,7 @@ class StringMapConverter(input: Map[String, String]) {
         val date = convertDate(input("date"))
         val amount = toDouble(input("amount")).getOrElse(0.00)
 
-        Some(Transaction(date.getOrElse(DateTime.now), input("species"), amount, input("description")))
+        Some(Transaction(date.getOrElse(DateTime.now), input("species"), amount, input("category"), input("description")))
       }
       case false => None
     }

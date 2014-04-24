@@ -29,10 +29,12 @@ class GeorginaServletSpec extends ScalatraSuite with FunSuite {
         {
           "date":"2014-04-07",
           "amount": 99.99,
+          "category": "unknown",
           "description":"PG & E"
         },
         {
           "date":"2014-04-04",
+          "category": "unknown",
           "amount": 20.00,
           "description":"McDonald's"
         }
@@ -51,6 +53,7 @@ class GeorginaServletSpec extends ScalatraSuite with FunSuite {
       [
         {
           "date":"2014-04-07",
+          "category": "unknown",
           "amount": "BAD RECORD",
           "description":"PG & E"
         }

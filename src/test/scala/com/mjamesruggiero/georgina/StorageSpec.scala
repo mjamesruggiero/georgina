@@ -21,19 +21,23 @@ class AutoRollbackSpec extends FlatSpec with AutoRollback with ShouldMatchers wi
   }
 
   override def fixture(implicit session: DBSession) {
-    sql"insert into transactions values (1, ${DateTime.now}, 'debit', 'Github', 20.00)".update.apply()
+    sql"insert into transactions values (NULL, ${DateTime.now}, 'debit', 'Github', 'personal', 20.00)".update.apply()
   }
 
   it should "store a new transaction" in { implicit session =>
-    val returned: Option[Int] = sql"""SELECT COUNT(*) AS count FROM transactions""".map(rs => rs.int("count")).single.apply()
+    val returned: Option[Int] = sql"""SELECT COUNT(*) AS count FROM transactions"""
+      .map(rs => rs.int("count"))
+      .single.apply()
     val countBefore = returned match {
       case Some(num) => num
       case _ => 0
     }
 
-    val t = new Transaction(DateTime.now, "debit", 20.00, "Office Depot")
+    val t = new Transaction(DateTime.now, "debit", 20.00, "unknown", "Office Depot")
     Storage.storeTransaction(config.env, t)
-    val postHoc: Option[Int] = sql"""SELECT COUNT(*) AS count FROM transactions""".map(rs => rs.int("count")).single.apply()
+    val postHoc: Option[Int] = sql"""SELECT COUNT(*) AS count FROM transactions"""
+      .map(rs => rs.int("count"))
+      .single.apply()
     val countAfter = postHoc match {
       case Some(num) => num
       case _ => 0
@@ -42,7 +46,7 @@ class AutoRollbackSpec extends FlatSpec with AutoRollback with ShouldMatchers wi
   }
 
   it should "create a new record only if one does not exist" in { implicit session =>
-    val t = new Transaction(DateTime.now, "debit", 20.00, "Github")
+    val t = new Transaction(DateTime.now, "debit", 20.00, "unknown", "Github")
     val returned: Option[Int] = sql"""SELECT COUNT(*) AS count
           FROM transactions
           WHERE date=${t.date}
