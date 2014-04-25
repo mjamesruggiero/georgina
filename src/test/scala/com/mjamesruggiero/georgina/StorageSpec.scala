@@ -33,7 +33,7 @@ class AutoRollbackSpec extends FlatSpec with AutoRollback with ShouldMatchers wi
       case _ => 0
     }
 
-    val t = new Transaction(DateTime.now, "debit", 20.00, "unknown", "Office Depot")
+    val t = new Transaction(1L, DateTime.now, "debit", 20.00, "unknown", "Office Depot")
     Storage.storeTransaction(config.env, t)
     val postHoc: Option[Int] = sql"""SELECT COUNT(*) AS count FROM transactions"""
       .map(rs => rs.int("count"))
@@ -46,7 +46,7 @@ class AutoRollbackSpec extends FlatSpec with AutoRollback with ShouldMatchers wi
   }
 
   it should "create a new record only if one does not exist" in { implicit session =>
-    val t = new Transaction(DateTime.now, "debit", 20.00, "unknown", "Github")
+    val t = new Transaction(1L, DateTime.now, "debit", 20.00, "unknown", "Github")
     val returned: Option[Int] = sql"""SELECT COUNT(*) AS count
           FROM transactions
           WHERE date=${t.date}

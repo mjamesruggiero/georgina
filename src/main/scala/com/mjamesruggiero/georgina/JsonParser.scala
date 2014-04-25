@@ -35,7 +35,8 @@ object JSONParsers {
     implicitly[DecodeJson[String]].map(FULL_ISO8601_FORMAT.parseDateTime) setName "org.joda.time.DateTime"
 
   implicit def TransactionCodec: CodecJson[Transaction]  =
-    casecodec5(Transaction.apply, Transaction.unapply)(
+    casecodec6(Transaction.apply, Transaction.unapply)(
+      "id",
       "date",
       "species",
       "amount",
@@ -45,6 +46,6 @@ object JSONParsers {
 
   def buildTransaction(line: Line): Transaction = {
     val parsedDate = DateTime.parse(line.date)
-    Transaction(parsedDate, "debit", line.amount.getOrElse(0.0), line.category, line.description)
+    Transaction(0L, parsedDate, "debit", line.amount.getOrElse(0.0), line.category, line.description)
   }
 }

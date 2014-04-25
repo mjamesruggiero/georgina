@@ -27,12 +27,14 @@ class GeorginaServletSpec extends ScalatraSuite with FunSuite {
       "transactions":
       [
         {
+          "id": 0,
           "date":"2014-04-07",
           "amount": 99.99,
           "category": "unknown",
           "description":"PG & E"
         },
         {
+          "id": 0,
           "date":"2014-04-04",
           "category": "unknown",
           "amount": 20.00,

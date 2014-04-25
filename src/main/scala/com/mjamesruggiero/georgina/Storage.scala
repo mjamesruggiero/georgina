@@ -21,7 +21,7 @@ object Storage {
 
     if(! existingAlready(env, t)) {
       t match {
-        case Transaction(date, species, amt, cat, desc) => {
+        case Transaction(id, date, species, amt, cat, desc) => {
           val newCat = new Categorizer(desc).categorize.c
           sql"""INSERT INTO transactions(id, date, species, description, category, amount)
                 VALUES (null, ${date}, ${species}, ${desc}, ${newCat}, ${amt})""".execute.apply()
@@ -51,7 +51,9 @@ object Storage {
 
     sql"SELECT id, date, species, amount, description FROM transactions ORDER BY id"
     .map {
-      rs => Transaction(DateTime.parse(rs.string("date")),
+      rs => Transaction(
+          rs.long("id"),
+          DateTime.parse(rs.string("date")),
           rs.string("species"),
           rs.double("amount"),
           rs.string("category"),

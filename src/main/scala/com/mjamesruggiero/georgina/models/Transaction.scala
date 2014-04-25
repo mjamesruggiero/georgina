@@ -1,12 +1,21 @@
 package com.mjamesruggiero.georgina.models
 
 import org.joda.time.DateTime
+import scalikejdbc._, SQLInterpolation._
 
-case class Transaction(date: DateTime,
+case class Transaction(
+id: Long,
+date: DateTime,
 species: String,
 amount: Double,
 category: String,
 description: String)
+
+object Transaction extends SQLSyntaxSupport[Transaction] {
+  override val tableName = "transactions"
+  def apply(rs: WrappedResultSet) = new Transaction(
+    rs.long("id"), rs.dateTime("date"), rs.string("species"), rs.double( "amount" ), rs.string("category"), rs.string("description"))
+}
 
 sealed trait Stats {
   def averageAmount: Double
