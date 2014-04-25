@@ -3,17 +3,18 @@ package com.mjamesruggiero.georgina
 import org.scalatra.test.scalatest._
 import org.scalatest.FunSuite
 
-class GeorginaServletSpec extends ScalatraSuite with FunSuite {
+class GeorginaServletSpec extends ScalatraFlatSpec {
+
   addServlet(new GeorginaServlet("test"), "/*")
 
-  test("index should return 200") {
+  it should "return 200" in  {
     get("/") {
       status should equal (200)
       body should include ("Georgina")
     }
   }
 
-  test("POST /submit fails with bad JSON") {
+  it should "POST /submit fails with bad JSON" in {
     val input = """{"foo":[ {"bar":"baz" }]}"""
     post("submit", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
       status should equal(500)
@@ -21,7 +22,7 @@ class GeorginaServletSpec extends ScalatraSuite with FunSuite {
     }
   }
 
-  test("POST /submit succeeds with good JSON") {
+  it should "POST /submit succeeds with good JSON" in {
     val input = """
     {
       "transactions":
@@ -48,7 +49,7 @@ class GeorginaServletSpec extends ScalatraSuite with FunSuite {
     }
   }
 
-  test("POST /submit fails with bad record") {
+  it should "POST /submit fails with bad record" in {
     val input = """
     {
       "transactions":
