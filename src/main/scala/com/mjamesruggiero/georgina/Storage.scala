@@ -61,4 +61,23 @@ object Storage {
         )
     }.list.apply()
   }
+
+  def transactionsInCategory(env: String, category: String)(implicit session: DBSession = AutoSession): List[Transaction] = {
+    initialize(env)
+
+    sql"""SELECT id, date, species, amount, category, description
+    FROM transactions
+    WHERE category = ${category}
+    ORDER BY date DESC"""
+    .map {
+      rs => Transaction(
+          rs.long("id"),
+          DateTime.parse(rs.string("date")),
+          rs.string("species"),
+          rs.double("amount"),
+          rs.string("category"),
+          rs.string("description")
+        )
+    }.list.apply()
+  }
 }

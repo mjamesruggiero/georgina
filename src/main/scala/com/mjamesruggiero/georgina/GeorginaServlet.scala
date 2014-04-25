@@ -24,6 +24,12 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
     Ok(ts.asJson)
   }
 
+  get("/categories/:category") {
+    val data = Storage.transactionsInCategory(environment, params("category"))
+    val ts = TransactionSet(data)
+    Ok(ts.asJson)
+  }
+
   post("/submit") {
     request.body.decodeOption[Report] match {
       case Some(t) => t.lines match {

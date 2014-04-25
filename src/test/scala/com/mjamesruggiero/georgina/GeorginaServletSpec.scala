@@ -2,19 +2,49 @@ package com.mjamesruggiero.georgina
 
 import org.scalatra.test.scalatest._
 import org.scalatest.FunSuite
+import org.scalatest.BeforeAndAfter
+import scalikejdbc.SQLInterpolation._
+import scalikejdbc._
+import scalikejdbc.config._
+import scalikejdbc.scalatest.AutoRollback
+import com.mjamesruggiero.georgina.config._
+import org.joda.time.DateTime
 
-class GeorginaServletSpec extends ScalatraFlatSpec {
+class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
+  lazy val config = new TestEnv
+
+  before {
+    DBsWithEnv(config.env).setupAll()
+    ConnectionPool('default).borrow()
+    buildFixture
+  }
+
+  after {
+    removeFixture
+  }
+
+  /*
+  * TODO put these in a test helper
+  **/
+  def buildFixture(implicit session: DBSession = AutoSession) {
+    sql"insert into transactions values (NULL, ${DateTime.now}, 'debit', 'Github', 'personal', 20.00)".update.apply()
+    sql"insert into transactions values (NULL, ${DateTime.now}, 'debit', 'Wells Fargo', 'bank', 20.00)".update.apply()
+  }
+
+  def removeFixture(implicit session: DBSession = AutoSession) {
+    sql"DELETE FROM transactions WHERE species='debit' AND description='Github'".update.apply()
+  }
 
   addServlet(new GeorginaServlet("test"), "/*")
 
-  it should "return 200" in  {
+  "GET /" should "return 200" in  {
     get("/") {
       status should equal (200)
       body should include ("Georgina")
     }
   }
 
-  it should "POST /submit fails with bad JSON" in {
+  "POST /submit" should "fail with bad JSON" in {
     val input = """{"foo":[ {"bar":"baz" }]}"""
     post("submit", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
       status should equal(500)
@@ -22,7 +52,7 @@ class GeorginaServletSpec extends ScalatraFlatSpec {
     }
   }
 
-  it should "POST /submit succeeds with good JSON" in {
+  it should "succeed with good JSON" in {
     val input = """
     {
       "transactions":
@@ -49,7 +79,7 @@ class GeorginaServletSpec extends ScalatraFlatSpec {
     }
   }
 
-  it should "POST /submit fails with bad record" in {
+  it should "fail with bad record" in {
     val input = """
     {
       "transactions":
@@ -65,6 +95,14 @@ class GeorginaServletSpec extends ScalatraFlatSpec {
     """
     post("submit", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
       status should equal(500)
+    }
+  }
+
+  "GET /categories/:category" should "retrieve transactions with a category" in {
+    get("/categories/personal") {
+      status should equal (200)
+      body should include ("Github")
+      body should not include ("Wells Fargo")
     }
   }
 }
