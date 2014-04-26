@@ -19,7 +19,7 @@ object Storage {
   def store(env: String, t: Transaction)(implicit session: DBSession = AutoSession) = {
     initialize(env)
 
-    if(! existingAlready(env, t)) {
+    if(! exists(env, t)) {
       t match {
         case Transaction(id, date, species, amt, cat, desc) => {
           val newCat = new Categorizer(desc).categorize.c
@@ -30,7 +30,7 @@ object Storage {
     }
   }
 
-  def existingAlready(env: String, t: Transaction)(implicit session: DBSession = AutoSession): Boolean = {
+  def exists(env: String, t: Transaction)(implicit session: DBSession = AutoSession): Boolean = {
     initialize(env)
 
     val returned: Option[Int] = sql"""SELECT COUNT(*) AS count
