@@ -4,11 +4,15 @@ case class Category(c: String)
 
 class Categorizer(raw: String) {
   def categorize = {
-    new CategorizationStrategy(raw).result
+    new StringContainsStrategy(raw).result
   }
 }
 
-class CategorizationStrategy(s: String) {
+trait CategorizationStrategy {
+  def result: Category
+}
+
+class StringContainsStrategy(s: String) extends CategorizationStrategy {
   def result: Category = s match {
     case (desc) if desc.toLowerCase.contains("alameda alliance payroll") => Category("salary")
     case (desc) if desc.toLowerCase.contains("alameda gas") => Category("transportation")
