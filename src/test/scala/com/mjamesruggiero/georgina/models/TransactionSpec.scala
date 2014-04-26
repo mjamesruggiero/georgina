@@ -73,5 +73,4 @@ class TransactionSpec extends ScalatraSuite with FunSuite {
     val tSet = new TransactionSet(datedTrans)
     tSet.byDate(january).map(_.amount).sum should equal(1200.0)
   }
-
 }

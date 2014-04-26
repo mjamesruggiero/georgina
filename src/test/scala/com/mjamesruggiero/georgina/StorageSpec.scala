@@ -34,7 +34,7 @@ class AutoRollbackSpec extends FlatSpec with AutoRollback with ShouldMatchers wi
     }
 
     val t = new Transaction(1L, DateTime.now, "debit", 20.00, "unknown", "Office Depot")
-    Storage.storeTransaction(config.env, t)
+    Storage.store(config.env, t)
     val postHoc: Option[Int] = sql"""SELECT COUNT(*) AS count FROM transactions"""
       .map(rs => rs.int("count"))
       .single.apply()
@@ -58,7 +58,7 @@ class AutoRollbackSpec extends FlatSpec with AutoRollback with ShouldMatchers wi
       case Some(num) => num
       case _ => 0
     }
-    Storage.storeTransaction(config.env, t)
+    Storage.store(config.env, t)
 
     val postHoc: Option[Int] = sql"""SELECT COUNT(*) AS count
           FROM transactions

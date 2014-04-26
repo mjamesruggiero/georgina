@@ -41,7 +41,7 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
         }
         case (l:List[Line]) => {
           l.map { t =>
-            Storage.storeTransaction(environment, JSONParsers.buildTransaction(t))
+            Storage.store(environment, JSONParsers.buildTransaction(t))
           }
         }
       }

@@ -16,7 +16,7 @@ object Storage {
     ConnectionPool('default).borrow()
   }
 
-  def storeTransaction(env: String, t: Transaction)(implicit session: DBSession = AutoSession) = {
+  def store(env: String, t: Transaction)(implicit session: DBSession = AutoSession) = {
     initialize(env)
 
     if(! existingAlready(env, t)) {
