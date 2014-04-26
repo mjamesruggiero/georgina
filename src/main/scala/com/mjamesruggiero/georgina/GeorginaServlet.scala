@@ -25,7 +25,7 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
   }
 
   get("/categories/:category") {
-    val data = Storage.transactionsInCategory(environment, params("category"))
+    val data = Storage.withCategory(environment, params("category"))
     val ts = TransactionSet(data)
     Ok(ts.asJson)
   }

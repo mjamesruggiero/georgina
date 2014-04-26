@@ -62,7 +62,7 @@ object Storage {
     }.list.apply()
   }
 
-  def transactionsInCategory(env: String, category: String)(implicit session: DBSession = AutoSession): List[Transaction] = {
+  def withCategory(env: String, category: String)(implicit session: DBSession = AutoSession): List[Transaction] = {
     initialize(env)
 
     sql"""SELECT id, date, species, amount, category, description
