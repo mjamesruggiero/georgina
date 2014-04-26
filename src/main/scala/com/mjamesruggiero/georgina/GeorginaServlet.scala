@@ -20,7 +20,7 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
   }
 
   get("/transactions") {
-    val ts = TransactionSet(Storage.allTransactions(environment))
+    val ts = TransactionSet(Storage.all(environment))
     Ok(ts.asJson)
   }
 

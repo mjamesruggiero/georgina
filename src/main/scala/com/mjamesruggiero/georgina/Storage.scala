@@ -46,7 +46,7 @@ object Storage {
     }
   }
 
-  def allTransactions(env: String)(implicit session: DBSession = AutoSession): List[Transaction] = {
+  def all(env: String)(implicit session: DBSession = AutoSession): List[Transaction] = {
     initialize(env)
 
     sql"SELECT id, date, species, amount, description FROM transactions ORDER BY id"
