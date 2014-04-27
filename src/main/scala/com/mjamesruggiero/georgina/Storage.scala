@@ -49,7 +49,7 @@ object Storage {
   def all(env: String)(implicit session: DBSession = AutoSession): List[Transaction] = {
     initialize(env)
 
-    sql"SELECT id, date, species, amount, description FROM transactions ORDER BY id"
+    sql"SELECT id, date, species, amount, category, description FROM transactions ORDER BY id"
     .map {
       rs => Transaction(
           rs.long("id"),
@@ -68,6 +68,26 @@ object Storage {
     sql"""SELECT id, date, species, amount, category, description
     FROM transactions
     WHERE category = ${category}
+    ORDER BY date DESC"""
+    .map {
+      rs => Transaction(
+          rs.long("id"),
+          DateTime.parse(rs.string("date")),
+          rs.string("species"),
+          rs.double("amount"),
+          rs.string("category"),
+          rs.string("description")
+        )
+    }.list.apply()
+  }
+
+  def inDateSpan(env: String, startDate: DateTime, endDate: DateTime)(implicit session: DBSession = AutoSession): List[Transaction] = {
+    initialize(env)
+
+    sql"""SELECT id, date, species, amount, category, description
+    FROM transactions
+    WHERE date >= ${startDate}
+    AND date <= ${endDate}
     ORDER BY date DESC"""
     .map {
       rs => Transaction(

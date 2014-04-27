@@ -22,6 +22,10 @@ class AutoRollbackSpec extends FlatSpec with AutoRollback with ShouldMatchers wi
 
   override def fixture(implicit session: DBSession) {
     sql"insert into transactions values (NULL, ${DateTime.now}, 'debit', 'Github', 'personal', 20.00)".update.apply()
+
+    // for the datespan
+    val january13 = DateTime.parse("2014-01-13")
+    sql"INSERT into Transactions VALUES (NULL, ${january13}, 'debit', 'January purchase', 'personal', 20.00)".update.apply()
   }
 
   it should "store a new transaction" in { implicit session =>
@@ -72,5 +76,14 @@ class AutoRollbackSpec extends FlatSpec with AutoRollback with ShouldMatchers wi
       case _ => 0
     }
     countAfter should equal(countBefore)
+  }
+
+  it should "let you select transcations in a date range" in { implicit session =>
+    val startDate = DateTime.parse("2013-12-13")
+    val endDate = DateTime.parse("2014-01-13")
+
+    val result = Storage.inDateSpan(config.env, startDate, endDate)
+    val description = result.head.description
+    description should equal("January purchase")
   }
 }
