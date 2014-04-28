@@ -27,12 +27,16 @@ class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   * TODO put these in a test helper
   **/
   def buildFixture(implicit session: DBSession = AutoSession) {
-    sql"insert into transactions values (NULL, ${DateTime.now}, 'debit', 'Github', 'personal', 20.00)".update.apply()
-    sql"insert into transactions values (NULL, ${DateTime.now}, 'debit', 'Wells Fargo', 'bank', 20.00)".update.apply()
+    val earlierDate = DateTime.parse("2014-01-01")
+    val laterDate = DateTime.parse("2014-02-01")
+    sql"insert into transactions values (NULL, ${earlierDate}, 'debit', 'Github', 'personal', 20.00)".update.apply()
+    sql"insert into transactions values (NULL, ${laterDate}, 'debit', 'Wells Fargo', 'bank', 20.00)".update.apply()
   }
 
   def removeFixture(implicit session: DBSession = AutoSession) {
-    sql"DELETE FROM transactions WHERE species='debit' AND description='Github'".update.apply()
+    sql"""DELETE FROM transactions
+          WHERE species='debit'
+          AND (description='Github' OR description='Wells Fargo')""".update.apply()
   }
 
   addServlet(new GeorginaServlet("test"), "/*")
@@ -103,6 +107,14 @@ class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
       status should equal (200)
       body should include ("Github")
       body should not include ("Wells Fargo")
+    }
+  }
+
+  "GET /transactions/<date-params>" should "retrieve transactions in a range" in {
+    get("/transactions?start=2014-01-15&end=2014-02-05") {
+      status should equal (200)
+      body should include ("Wells Fargo")
+      body should not include ("Github")
     }
   }
 }

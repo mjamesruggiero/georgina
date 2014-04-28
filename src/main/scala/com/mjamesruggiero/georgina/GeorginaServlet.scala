@@ -3,6 +3,7 @@ package com.mjamesruggiero.georgina
 import argonaut._, Argonaut._
 import com.mjamesruggiero.georgina._
 import com.mjamesruggiero.georgina.models._
+import org.joda.time.DateTime
 import org.scalatra._
 import org.slf4j.{Logger, LoggerFactory}
 import scalate.ScalateSupport
@@ -20,7 +21,13 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
   }
 
   get("/transactions") {
-    val ts = TransactionSet(Storage.all(environment))
+    val startParam = params.getOrElse("start", "2014-01-01")
+    val endParam = params.getOrElse("end", "2014-06-01")
+    val start = DateTime.parse(startParam)
+    val end = DateTime.parse(endParam)
+
+    val result = Storage.inDateSpan(environment, start, end)
+    val ts = TransactionSet(result)
     Ok(ts.asJson)
   }
 
