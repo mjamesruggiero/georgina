@@ -91,7 +91,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
     description should equal("January purchase")
   }
 
-  it should "let you select category summary" in { implicit session =>
+  it should "let you select category details" in { implicit session =>
     val category = "utilities"
 
     val result = Storage.withCategory(config.env,
@@ -100,5 +100,15 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
                                       testDates("endDate"))
     val description = result.head.description
     description should equal("Github")
+  }
+
+  it should "let you select category summary" in { implicit session =>
+    val category = "utilities"
+
+    val result = Storage.categoryStats(config.env,
+                                       testDates("startDate"),
+                                       testDates("endDate"))
+    val description = result.head.mean
+    description should equal(20.0)
   }
 }

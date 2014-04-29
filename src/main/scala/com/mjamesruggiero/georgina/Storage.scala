@@ -9,6 +9,8 @@ import scalaz.Reader._
 
 case class QueryException(message:String) extends Exception(message)
 
+case class CategorySummary(category: String, count: Int, mean: Double, sttdev: Double)
+
 object Storage {
 
   def initialize(env: String) = {
@@ -97,6 +99,30 @@ object Storage {
           rs.double("amount"),
           rs.string("category"),
           rs.string("description")
+        )
+    }.list.apply()
+  }
+
+  def categoryStats(env: String,
+                    startDate: DateTime,
+                    endDate: DateTime)(implicit session: DBSession = AutoSession): List[CategorySummary] = {
+
+
+    initialize(env)
+
+    sql"""SELECT category, COUNT(*) category_count,
+    AVG(amount) mean, STD(amount) stddev
+    FROM transactions
+    WHERE date >= ${startDate}
+    AND date <= ${endDate}
+    GROUP BY category
+    ORDER by mean DESC"""
+    .map {
+      rs => CategorySummary(
+          rs.string("category"),
+          rs.int("category_count"),
+          rs.double("mean"),
+          rs.double("stddev")
         )
     }.list.apply()
   }
