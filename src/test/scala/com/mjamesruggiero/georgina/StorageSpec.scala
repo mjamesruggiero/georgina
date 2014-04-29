@@ -11,9 +11,14 @@ import scalikejdbc._
 import scalikejdbc.config._
 import scalikejdbc.scalatest.AutoRollback
 
-class AutoRollbackSpec extends FlatSpec with AutoRollback with ShouldMatchers with BeforeAndAfter {
+class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with BeforeAndAfter {
 
   lazy val config = new TestEnv
+
+  lazy val testDates: Map[String, org.joda.time.DateTime] = Map(
+    "startDate" -> DateTime.parse("2013-12-13"),
+    "endDate" -> DateTime.parse("2014-01-13")
+  )
 
   before {
     DBsWithEnv(config.env).setupAll()
@@ -21,7 +26,7 @@ class AutoRollbackSpec extends FlatSpec with AutoRollback with ShouldMatchers wi
   }
 
   override def fixture(implicit session: DBSession) {
-    sql"insert into transactions values (NULL, ${DateTime.now}, 'debit', 'Github', 'personal', 20.00)".update.apply()
+    sql"insert into transactions values (NULL, ${DateTime.now}, 'debit', 'Github', 'utilities', 20.00)".update.apply()
 
     // for the datespan
     val january13 = DateTime.parse("2014-01-13")
@@ -79,11 +84,21 @@ class AutoRollbackSpec extends FlatSpec with AutoRollback with ShouldMatchers wi
   }
 
   it should "let you select transcations in a date range" in { implicit session =>
-    val startDate = DateTime.parse("2013-12-13")
-    val endDate = DateTime.parse("2014-01-13")
-
-    val result = Storage.inDateSpan(config.env, startDate, endDate)
+    val result = Storage.inDateSpan(config.env,
+                                    testDates("startDate"),
+                                    testDates("endDate"))
     val description = result.head.description
     description should equal("January purchase")
+  }
+
+  it should "let you select category summary" in { implicit session =>
+    val category = "utilities"
+
+    val result = Storage.withCategory(config.env,
+                                      category,
+                                      testDates("startDate"),
+                                      testDates("endDate"))
+    val description = result.head.description
+    description should equal("Github")
   }
 }

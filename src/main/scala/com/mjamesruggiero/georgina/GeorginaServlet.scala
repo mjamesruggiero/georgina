@@ -32,7 +32,12 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
   }
 
   get("/categories/:category") {
-    val data = Storage.withCategory(environment, params("category"))
+    val startParam = params.getOrElse("start", "2014-01-01")
+    val endParam = params.getOrElse("end", "2014-06-01")
+    val start = DateTime.parse(startParam)
+    val end = DateTime.parse(endParam)
+
+    val data = Storage.withCategory(environment, params("category"), start, end)
     val ts = TransactionSet(data)
     Ok(ts.asJson)
   }
