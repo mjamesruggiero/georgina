@@ -23,9 +23,6 @@ class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     removeFixture
   }
 
-  /*
-  * TODO put these in a test helper
-  **/
   def buildFixture(implicit session: DBSession = AutoSession) {
     val earlierDate = DateTime.parse("2014-01-01")
     val laterDate = DateTime.parse("2014-02-01")
@@ -102,8 +99,8 @@ class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     }
   }
 
-  "GET /categories/:category" should "retrieve transactions with a category" in {
-    get("/categories/personal") {
+  "GET /category/:category" should "retrieve transactions with a category" in {
+    get("/category/personal") {
       status should equal (200)
       body should include ("Github")
       body should not include ("Wells Fargo")
@@ -115,6 +112,13 @@ class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
       status should equal (200)
       body should include ("Wells Fargo")
       body should not include ("Github")
+    }
+  }
+
+  "GET /categories" should "retrieve summary index for categories" in {
+    get("/categories?start=2014-01-15&end=2014-02-05") {
+      status should equal (200)
+      body should include ("""{"category":"bank","count":1,"mean":20,"standard_deviation":0}""")
     }
   }
 }

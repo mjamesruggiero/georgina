@@ -48,4 +48,11 @@ object JSONParsers {
     val parsedDate = DateTime.parse(line.date)
     Transaction(0L, parsedDate, "debit", line.amount.getOrElse(0.0), line.category, line.description)
   }
+
+  implicit def CategorySummaryCodec: CodecJson[CategorySummary] =
+    casecodec4(CategorySummary.apply, CategorySummary.unapply)(
+      "category",
+      "count",
+      "mean",
+      "standard_deviation")
 }
