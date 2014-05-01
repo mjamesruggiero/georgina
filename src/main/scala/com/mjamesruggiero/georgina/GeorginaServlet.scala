@@ -51,27 +51,27 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
 
   get("/categories") {
     try {
-      val startParam = params.getOrElse("start", defaultDateParam("startDate"))
-      val endParam = params.getOrElse("end", defaultDateParam("endDate"))
-      val start = DateTime.parse(startParam)
-      val end = DateTime.parse(endParam)
+      val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
+      val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
       val data = Storage.categoryStats(environment, start, end)
       Ok(data.asJson)
     }
       catch {
-        case _: Throwable => InternalServerError(body = s"""error""")
+        case _: Throwable => InternalServerError(body = s"""error: invalid params""")
     }
   }
 
   get("/category/:category") {
-    val startParam = params.getOrElse("start", defaultDateParam("startDate"))
-    val endParam = params.getOrElse("end", defaultDateParam("endDate"))
-    val start = DateTime.parse(startParam)
-    val end = DateTime.parse(endParam)
-
-    val data = Storage.withCategory(environment, params("category"), start, end)
-    val ts = TransactionSet(data)
-    Ok(ts.asJson)
+    try {
+      val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
+      val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
+      val data = Storage.withCategory(environment, params("category"), start, end)
+      val ts = TransactionSet(data)
+      Ok(ts.asJson)
+    }
+      catch {
+        case _: Throwable => InternalServerError(body = s"""error: invalid params""")
+    }
   }
 
   post("/submit") {

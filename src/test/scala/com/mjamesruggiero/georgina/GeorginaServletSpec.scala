@@ -107,6 +107,14 @@ class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     }
   }
 
+  "GET /category/:category" should "handle bad date params" in {
+    get("/category/personal?start=asd72-15&end=2014-04-01") {
+      println(response.body)
+      status should equal (500)
+      body should include ("error: invalid params")
+    }
+  }
+
   "GET /transactions/<date-params>" should "retrieve transactions in a range" in {
     get("/transactions?start=2014-01-15&end=2014-02-05") {
       status should equal (200)
