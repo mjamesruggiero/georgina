@@ -121,4 +121,12 @@ class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
       body should include ("""{"category":"bank","count":1,"mean":20,"standard_deviation":0}""")
     }
   }
+
+  "GET /categories" should "handle bad date params" in {
+    get("/categories?start=2014-01-15&end=foo") {
+      println(response.body)
+      status should equal (500)
+      body should include ("error")
+    }
+  }
 }

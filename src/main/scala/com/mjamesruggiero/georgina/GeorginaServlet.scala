@@ -8,6 +8,7 @@ import org.joda.time.format.DateTimeFormat
 import org.scalatra._
 import org.slf4j.{Logger, LoggerFactory}
 import scalate.ScalateSupport
+import scala.util.Try
 
 case class ServletException(message: String) extends Exception(message)
 
@@ -18,13 +19,13 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
 
   def defaultDateParam: Map[String, String] = {
     val format = DateTimeFormat.forPattern("yyyy-MM-dd");
+
     val startOfThisMonth: DateTime = new DateTime().
-      dayOfMonth().
-      withMinimumValue()
+      dayOfMonth().withMinimumValue()
+
     val startofNextMonth: DateTime = startOfThisMonth
-      .plusMonths(1)
-      .dayOfMonth()
-      .withMinimumValue()
+      .plusMonths(1).dayOfMonth().withMinimumValue()
+
     Map(
       "startDate" -> startOfThisMonth.toString(format),
       "endDate" -> startofNextMonth.toString(format)
@@ -49,13 +50,17 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
   }
 
   get("/categories") {
-    val startParam = params.getOrElse("start", defaultDateParam("startDate"))
-    val endParam = params.getOrElse("end", defaultDateParam("endDate"))
-    val start = DateTime.parse(startParam)
-    val end = DateTime.parse(endParam)
-
-    val data = Storage.categoryStats(environment, start, end)
-    Ok(data.asJson)
+    try {
+      val startParam = params.getOrElse("start", defaultDateParam("startDate"))
+      val endParam = params.getOrElse("end", defaultDateParam("endDate"))
+      val start = DateTime.parse(startParam)
+      val end = DateTime.parse(endParam)
+      val data = Storage.categoryStats(environment, start, end)
+      Ok(data.asJson)
+    }
+      catch {
+        case _: Throwable => InternalServerError(body = s"""error""")
+    }
   }
 
   get("/category/:category") {
