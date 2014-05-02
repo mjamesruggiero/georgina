@@ -17,18 +17,6 @@ object Transaction extends SQLSyntaxSupport[Transaction] {
     rs.long("id"), rs.dateTime("date"), rs.string("species"), rs.double( "amount" ), rs.string("category"), rs.string("description"))
 }
 
-sealed trait Stats {
-  def averageAmount: Double
-  def amountBySpecies: Map[String, Double]
-  def average: Double
-  def averageSpend: Double
-  def standardDeviation: Double
-  def withDescription: List[Transaction]
-  def withSpecies: List[Transaction]
-  def debits: List[Transaction]
-  def byDate: scala.collection.immutable.Map[DateTime, List[Transaction]]
-}
-
 case class TransactionSet(transactions: List[Transaction]) {
   def averageAmount: Double = {
     val amounts = transactions.map(_.amount)
