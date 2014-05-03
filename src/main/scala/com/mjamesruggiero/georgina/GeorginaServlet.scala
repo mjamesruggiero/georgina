@@ -34,7 +34,7 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
 
   get("/") {
     contentType="text/html"
-    ssp("/georgina/index", "title" -> "Georgina")
+    ssp("/georgina/index", "subhead" -> "This is the servlet", "title" -> "Georgina")
   }
 
   get("/transactions") {

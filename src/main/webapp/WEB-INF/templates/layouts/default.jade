@@ -1,12 +1,21 @@
 -@ val title: String
 -@ val headline: String = title
+-@ val subhead: String
 -@ val body: String
 
 !!!
 html
   head
     title= title
+    script(src='/js/bootstrap.js')
+    script(src='/js/bootstrap.min.js')
+    link(rel="stylesheet" type="text/css" href="/css/bootstrap.min.css")
   body
-    #content
+    .container
       h1= headline
+      p.lead= subhead
       != body
+      .row
+        .col-md-4 THIS IS
+        .col-md-4 SOME
+        .col-md-4 DATA
