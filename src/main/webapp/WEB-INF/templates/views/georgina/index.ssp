@@ -1,4 +1,8 @@
 <%@ val title: String %>
 
-<p>This is just a placeholder.</p>
+<p>This was rendered within index.ssp </p>
+
+<script type="text/template" id="static-template">
+    <p>This is text that was rendered by our Marionette app.</p>
+</script>
 
