@@ -5,15 +5,15 @@ import argonaut._, Argonaut._
 import org.scalatest.FunSuite
 import org.scalatra.test.scalatest._
 
-class JsonParsersSpec extends ScalatraSuite with FunSuite { 
+class JsonParsersSpec extends ScalatraSuite with FunSuite {
 
   import com.mjamesruggiero.georgina.JSONParsers._
 
   test("JSON should parse correctly") {
     val testJson = """
         {
-          "date":"2014-04-04", 
-          "amount": 20.00, 
+          "date":"2014-04-04",
+          "amount": 20.00,
           "category": "unknown",
           "description":"Amazon.com"
         }
@@ -29,19 +29,19 @@ class JsonParsersSpec extends ScalatraSuite with FunSuite {
 
   test("list of transactions JSON should parse correctly") {
     val testJson = """
-    { 
+    {
       "transactions":
       [
         {
-          "date":"2014-04-07", 
-          "amount": 99.99, 
+          "date":"2014-04-07",
+          "amount": 99.99,
           "category": "unknown",
           "description":"Target"
         },
         {
-          "date":"2014-04-04", 
+          "date":"2014-04-04",
           "category": "unknown",
-          "amount": 20.00, 
+          "amount": 20.00,
           "description":"Amazon.com"
         }
       ]
@@ -62,5 +62,11 @@ class JsonParsersSpec extends ScalatraSuite with FunSuite {
       case _ => false
     }
     isValid should equal(false)
+  }
+
+  test("should encode an error") {
+    val err = GeorginaError("param error", "Your param is messed up")
+    val expectedJson = """{"name":"param error","message":"Your param is messed up"}"""
+    err.asJson.toString should equal(expectedJson)
   }
 }

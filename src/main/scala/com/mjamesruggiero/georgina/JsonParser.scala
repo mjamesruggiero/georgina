@@ -16,6 +16,8 @@ case class Line(
   description: String
 )
 
+case class GeorginaError(name: String, message: String)
+
 object JSONParsers {
   implicit def LineCodecJson =
     casecodec4(Line.apply, Line.unapply)("date", "amount", "category", "description")
@@ -55,4 +57,7 @@ object JSONParsers {
       "count",
       "mean",
       "standard_deviation")
+
+  implicit def GeorginaErrorCodec: CodecJson[GeorginaError]  =
+    casecodec2(GeorginaError.apply, GeorginaError.unapply)("name", "message")
 }
