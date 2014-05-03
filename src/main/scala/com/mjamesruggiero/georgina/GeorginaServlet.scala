@@ -46,7 +46,7 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
       Ok(ts.asJson)
     }
       catch {
-        case _: Throwable => InternalServerError(body = s"""error: invalid params""")
+        case _: Throwable => InternalServerError(GeorginaError("param error", "error: invalid params").asJson)
     }
   }
 
@@ -58,7 +58,7 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
       Ok(data.asJson)
     }
       catch {
-        case _: Throwable => InternalServerError(body = s"""error: invalid params""")
+        case _: Throwable => InternalServerError(GeorginaError("param error", "error: invalid params").asJson)
     }
   }
 
@@ -71,7 +71,7 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
       Ok(ts.asJson)
     }
       catch {
-        case _: Throwable => InternalServerError(body = s"""error: invalid params""")
+        case _: Throwable => InternalServerError(GeorginaError("param error", "improper start and end dates").asJson)
     }
   }
 
@@ -80,8 +80,8 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
       case Some(t) => t.lines match {
         case Nil => {
           logger.error("failed to parse line ${t.lines}")
-          InternalServerError(body =
-            s"""unable to parse JSON"""
+          InternalServerError(
+            GeorginaError("format error", "unable to parse JSON").asJson
           )
         }
         case (l:List[Line]) => {
@@ -91,7 +91,7 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
         }
       }
       case _ => {
-        InternalServerError(body="""unable to parse JSON""")
+        InternalServerError(GeorginaError("format error", "unable to parse JSON").asJson)
       }
     }
   }

@@ -49,7 +49,7 @@ class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     val input = """{"foo":[ {"bar":"baz" }]}"""
     post("submit", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
       status should equal(500)
-      response.body should endWith ("unable to parse JSON")
+      response.body should include("unable to parse JSON")
     }
   }
 
@@ -110,7 +110,7 @@ class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   "GET /category/:category" should "handle bad date params" in {
     get("/category/personal?start=asd72-15&end=2014-04-01") {
       status should equal (500)
-      body should include ("error: invalid params")
+      body should include ("""{"name":"param error","message":"improper start and end dates"}""")
     }
   }
 
