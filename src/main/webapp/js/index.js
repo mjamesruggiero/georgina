@@ -1,26 +1,25 @@
 // Templates - note that they are inside the JS, because
 // scalatra tries to render the <%- foo %> as
 // Scala Server Pages tags
-var nameTemplate        = _.template("<p><%- firstName %> <%- lastName %></p>");
-var contactListTemplate = _.template("<%- firstName %> <%- lastName %>");
+var transactionListTemplate = _.template("<%- description %> <%- amount %>");
 
-Georgina.ContactItemView = Marionette.ItemView.extend({
+Georgina.TransactionItemView = Marionette.ItemView.extend({
     tagName: "li",
-    template: contactListTemplate
+    template: transactionListTemplate
 });
 
-Georgina.ContactsView = Marionette.CollectionView.extend({
+Georgina.TransactionsView = Marionette.CollectionView.extend({
     tagName: "ul",
-    itemView: Georgina.ContactItemView
+    itemView: Georgina.TransactionItemView
 });
 
 Georgina.on("initialize:after", function() {
-    var contacts = Georgina.request("contact:entities");
+    var transactions = Georgina.request("transaction:entities");
 
-    var contactsListView = new Georgina.ContactsView({
-        collection: contacts
+    var transactionsListView = new Georgina.TransactionsView({
+        collection: transactions
     });
 
-    Georgina.mainRegion.show(contactsListView);
+    Georgina.mainRegion.show(transactionsListView);
 });
 Georgina.start();
