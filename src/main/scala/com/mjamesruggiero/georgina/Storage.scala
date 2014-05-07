@@ -18,16 +18,20 @@ object Storage {
     ConnectionPool('default).borrow()
   }
 
+  def storeLinesAsTransactions(env: String, lines: List[Line])(implicit session: DBSession = AutoSession) = {
+    val transactions = lines.map { l => JSONParsers.buildTransaction(l) }
+    val nonExistentTransactions = transactions.filter(! exists(env, _))
+    nonExistentTransactions.map { t => store(env, t) }
+  }
+
   def store(env: String, t: Transaction)(implicit session: DBSession = AutoSession) = {
     initialize(env)
 
-    if(! exists(env, t)) {
-      t match {
-        case Transaction(id, date, species, amt, cat, desc) => {
-          val newCat = new Categorizer(desc).categorize.c
-          sql"""INSERT INTO transactions(id, date, species, description, category, amount)
-                VALUES (null, ${date}, ${species}, ${desc}, ${newCat}, ${amt})""".execute.apply()
-        }
+    t match {
+      case Transaction(id, date, species, amt, cat, desc) => {
+        val newCat = new Categorizer(desc).categorize.c
+        sql"""INSERT INTO transactions(id, date, species, description, category, amount)
+              VALUES (null, ${date}, ${species}, ${desc}, ${newCat}, ${amt})""".execute.apply()
       }
     }
   }
