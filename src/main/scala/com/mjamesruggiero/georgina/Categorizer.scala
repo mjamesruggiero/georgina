@@ -78,6 +78,11 @@ class StringContainsStrategy(s: String) extends CategorizationStrategy {
     case (desc) if desc.toLowerCase.contains("wildflower cafe") => Category("dining")
     case (desc) if desc.toLowerCase.contains("withdrawal in branch") => Category("cash")
     case (desc) if desc.toLowerCase.contains("yoshi") => Category("entertainment")
+    case (desc) if desc.toLowerCase.contains("etsy.com") => Category("entertainment")
+    case (desc) if desc.toLowerCase.contains("dandelion flow") => Category("entertainment")
+    case (desc) if desc.toLowerCase.contains("trader joe") => Category("grocery")
+    case (desc) if desc.toLowerCase.contains("recurring transfer") => Category("savings")
+    case (desc) if desc.toLowerCase.contains("anthropologie") => Category("entertainment")
     case _ => Category("unknown")
   }
 }
