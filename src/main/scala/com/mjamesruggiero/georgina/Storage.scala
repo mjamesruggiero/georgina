@@ -55,7 +55,8 @@ object Storage {
   def all(env: String)(implicit session: DBSession = AutoSession): List[Transaction] = {
     initialize(env)
 
-    sql"SELECT id, date, species, amount, category, description FROM transactions ORDER BY id"
+    sql"""SELECT id, date, species, amount, category, description
+          FROM transactions ORDER BY date, amount DESC"""
     .map {
       rs => Transaction(
           rs.long("id"),

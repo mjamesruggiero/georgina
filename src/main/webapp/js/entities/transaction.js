@@ -2,8 +2,7 @@ Georgina.module("Entities", function(Entities, Georgina, Backbone, Marionette, $
     Entities.Transaction = Backbone.Model.extend({});
 
     Entities.TransactionCollection = Backbone.Collection.extend({
-        model: Entities.Transaction,
-        comparator: "category"
+        model: Entities.Transaction
     });
 
     var transactions;
