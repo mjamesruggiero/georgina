@@ -1,15 +1,16 @@
 // Templates - note that they are inside the JS, because
 // scalatra tries to render the <%- foo %> as
 // Scala Server Pages tags
-var transactionListTemplate = _.template("<%- description %> <%- amount %>");
+var transactionListTemplate = _.template("<td><%- date %></td><td><%- category %></td><td><%- description %></td><td><%- amount %></td>");
 
 Georgina.TransactionItemView = Marionette.ItemView.extend({
-    tagName: "li",
+    tagName: "tr",
     template: transactionListTemplate
 });
 
 Georgina.TransactionsView = Marionette.CollectionView.extend({
-    tagName: "ul",
+    tagName: "table",
+    className: "table-condensed",
     itemView: Georgina.TransactionItemView
 });
 

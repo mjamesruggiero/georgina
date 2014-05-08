@@ -9,11 +9,22 @@ Georgina.module("Entities", function(Entities, Georgina, Backbone, Marionette, $
     var transactions;
 
     var initializeTransactions = function() {
-        transactions = new Entities.TransactionCollection([
-            { id: 1,  date: "2014-01-01", category: "grocery", description: "Nob Hill", amount: 16.30 },
-            { id: 2,  date: "2014-01-01", category: "grocery", description: "Trader Joe's", amount: 100.00 },
-            { id: 13, date: "2014-01-01", category: "entertainment", description: "Amazon.com", amount: 25.00 }
-        ]);
+        transactions = new Entities.TransactionCollection(getTransactions());
+    };
+
+    var getTransactions = function() {
+        var endpoint = "/category/unknown";
+        var data = getData(endpoint);
+        return data["transactions"];
+    };
+
+    var getData = function(endpoint) {
+        var json = $.ajax({
+            url: endpoint,
+            async: false
+        }).responseText;
+        data = JSON.parse(json);
+        return data;
     };
 
     var API = {
