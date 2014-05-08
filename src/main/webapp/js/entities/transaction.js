@@ -13,7 +13,7 @@ Georgina.module("Entities", function(Entities, Georgina, Backbone, Marionette, $
     };
 
     var getTransactions = function() {
-        var endpoint = "/category/unknown";
+        var endpoint = "/transactions";
         var data = getData(endpoint);
         return data["transactions"];
     };
