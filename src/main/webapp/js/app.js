@@ -1,5 +1,6 @@
 var Georgina = new Marionette.Application();
 
 Georgina.addRegions({
-    mainRegion: "#main-region"
+    mainRegion: "#main-region",
+    categoryRegion: "#category-region"
 });
