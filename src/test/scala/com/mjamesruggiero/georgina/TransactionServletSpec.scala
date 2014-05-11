@@ -10,7 +10,7 @@ import scalikejdbc.scalatest.AutoRollback
 import com.mjamesruggiero.georgina.config._
 import org.joda.time.DateTime
 
-class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
+class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   lazy val config = new TestEnv
 
   before {
@@ -36,7 +36,8 @@ class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
           AND (description='Github' OR description='Wells Fargo')""".update.apply()
   }
 
-  addServlet(new GeorginaServlet("test"), "/*")
+  addServlet(new TransactionServlet("test"), "/*")
+  addServlet(new CategoryServlet("test"), "/categories/*")
 
   "GET /" should "return 200" in  {
     get("/") {
@@ -99,16 +100,16 @@ class GeorginaServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     }
   }
 
-  "GET /category/:category" should "retrieve transactions with a category" in {
-    get("/category/personal") {
+  "GET /categories/:category" should "retrieve transactions with a category" in {
+    get("/categories/personal") {
       status should equal (200)
       body should include ("Github")
       body should not include ("Wells Fargo")
     }
   }
 
-  "GET /category/:category" should "handle bad date params" in {
-    get("/category/personal?start=asd72-15&end=2014-04-01") {
+  "GET /categories/:category" should "handle bad date params" in {
+    get("/categories/personal?start=asd72-15&end=2014-04-01") {
       status should equal (500)
       body should include ("""{"name":"param error","message":"improper start and end dates"}""")
     }

@@ -8,6 +8,7 @@ class ScalatraBootstrap extends LifeCycle with DatabaseClientInit {
   override def init(context: ServletContext) {
     configureDatabaseClient
     val env = "development"
-    context.mount(new GeorginaServlet(env), "/*")
+    context.mount(new TransactionServlet(env), "/*")
+    context.mount(new CategoryServlet(env), "/categories/*")
   }
 }

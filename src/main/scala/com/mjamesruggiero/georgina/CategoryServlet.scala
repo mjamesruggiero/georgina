@@ -12,7 +12,7 @@ import scala.util.Try
 
 case class ServletException(message: String) extends Exception(message)
 
-class GeorginaServlet(environment: String = "development")  extends GeorginaStack with ScalateSupport {
+class CategoryServlet(environment: String = "development")  extends GeorginaStack with ScalateSupport {
 
   val logger =  LoggerFactory.getLogger(getClass)
   import com.mjamesruggiero.georgina.JSONParsers._
@@ -33,24 +33,6 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
   }
 
   get("/") {
-    contentType="text/html"
-    ssp("/georgina/index", "subhead" -> "she counts your money", "title" -> "Georgina")
-  }
-
-  get("/transactions") {
-    try {
-      val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
-      val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
-      val result = Storage.inDateSpan(environment, start, end)
-      val ts = TransactionSet(result)
-      Ok(ts.asJson)
-    }
-      catch {
-        case _: Throwable => InternalServerError(GeorginaError("param error", "error: invalid params").asJson)
-    }
-  }
-
-  get("/categories") {
     try {
       val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
       val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
@@ -62,7 +44,7 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
     }
   }
 
-  get("/category/:category") {
+  get("/:category") {
     try {
       val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
       val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
@@ -75,22 +57,15 @@ class GeorginaServlet(environment: String = "development")  extends GeorginaStac
     }
   }
 
-  post("/submit") {
-    request.body.decodeOption[Report] match {
-      case Some(t) => t.lines match {
-        case Nil => {
-          logger.error("failed to parse line ${t.lines}")
-          InternalServerError(
-            GeorginaError("format error", "unable to parse JSON").asJson
-          )
-        }
-        case (l:List[Line]) => {
-          Storage.storeLinesAsTransactions(environment, l)
-        }
-      }
-      case _ => {
-        InternalServerError(GeorginaError("format error", "unable to parse JSON").asJson)
-      }
-    }
+  //get("/categories/:id") {
+  //}
+
+  post("/") {
+  }
+
+  //put("/categories/:id") {
+  //}
+
+  delete("/categories/:id") {
   }
 }
