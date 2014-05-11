@@ -37,7 +37,6 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   }
 
   addServlet(new TransactionServlet("test"), "/*")
-  addServlet(new CategoryServlet("test"), "/categories/*")
 
   "GET /" should "return 200" in  {
     get("/") {
@@ -100,21 +99,6 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     }
   }
 
-  "GET /categories/:category" should "retrieve transactions with a category" in {
-    get("/categories/personal") {
-      status should equal (200)
-      body should include ("Github")
-      body should not include ("Wells Fargo")
-    }
-  }
-
-  "GET /categories/:category" should "handle bad date params" in {
-    get("/categories/personal?start=asd72-15&end=2014-04-01") {
-      status should equal (500)
-      body should include ("""{"name":"param error","message":"improper start and end dates"}""")
-    }
-  }
-
   "GET /transactions/<date-params>" should "retrieve transactions in a range" in {
     get("/transactions?start=2014-01-15&end=2014-02-05") {
       status should equal (200)
@@ -127,20 +111,6 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     get("/transactions?start=2014-01-15&end=fasi82-0x05") {
       status should equal (500)
       body should include ("error: invalid params")
-    }
-  }
-
-  "GET /categories" should "retrieve summary index for categories" in {
-    get("/categories?start=2014-01-15&end=2014-02-05") {
-      status should equal (200)
-      body should include ("""{"category":"bank","count":1,"mean":20,"standard_deviation":0}""")
-    }
-  }
-
-  "GET /categories" should "handle bad date params" in {
-    get("/categories?start=2014-01-15&end=foo") {
-      status should equal (500)
-      body should include ("error")
     }
   }
 }
