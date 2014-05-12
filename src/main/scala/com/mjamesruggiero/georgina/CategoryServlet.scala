@@ -3,6 +3,7 @@ package com.mjamesruggiero.georgina
 import argonaut._, Argonaut._
 import com.mjamesruggiero.georgina._
 import com.mjamesruggiero.georgina.models._
+import com.mjamesruggiero.georgina.Utils._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.scalatra._
@@ -16,21 +17,6 @@ class CategoryServlet(environment: String = "development")  extends GeorginaStac
 
   val logger =  LoggerFactory.getLogger(getClass)
   import com.mjamesruggiero.georgina.JSONParsers._
-
-  def defaultDateParam: Map[String, String] = {
-    val format = DateTimeFormat.forPattern("yyyy-MM-dd");
-
-    val startOfThisMonth: DateTime = new DateTime().
-      dayOfMonth().withMinimumValue()
-
-    val startofNextMonth: DateTime = startOfThisMonth
-      .plusMonths(1).dayOfMonth().withMinimumValue()
-
-    Map(
-      "startDate" -> startOfThisMonth.toString(format),
-      "endDate" -> startofNextMonth.toString(format)
-    )
-  }
 
   get("/") {
     try {
@@ -60,12 +46,12 @@ class CategoryServlet(environment: String = "development")  extends GeorginaStac
   //get("/categories/:id") {
   //}
 
-  post("/") {
-  }
+  //post("/") {
+  //}
 
   //put("/categories/:id") {
   //}
 
-  delete("/categories/:id") {
-  }
+  //delete("/categories/:id") {
+  //}
 }
