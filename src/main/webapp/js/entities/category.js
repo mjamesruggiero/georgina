@@ -1,16 +1,3 @@
-var categoryListTemplate =
-    _.template("<a href='category/<%- category %>'><%-category%></a> (<%- count %>)");
-
-Georgina.CategoryItemView = Marionette.ItemView.extend({
-    tagName: "li",
-    template: categoryListTemplate
-});
-
-Georgina.CategoriesView = Marionette.CollectionView.extend({
-    tagName: "ul",
-    itemView: Georgina.CategoryItemView
-});
-
 Georgina.module("Entities", function(Entities, Georgina, Backbone, Marionette, $, _){
     Entities.Category = Backbone.Model.extend({});
 

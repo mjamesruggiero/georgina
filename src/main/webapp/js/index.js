@@ -6,7 +6,7 @@
 var transactionListTemplate =
     _.template("<td><%- date.substring(0, 10) %></td><td><%- category %></td><td><%- description.substring(0, 48) %>...</td><td><%- amount %></td>");
 var categoryListTemplate =
-    _.template("<a href='category/<%- category %>'><%-category%></a> (<%- count %>)");
+    _.template("<a href='categories/<%- category %>'><%-category%></a> (<%- count %>)");
 
 Georgina.CategoryItemView = Marionette.ItemView.extend({
     tagName: "li",
