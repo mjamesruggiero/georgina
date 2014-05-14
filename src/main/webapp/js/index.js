@@ -22,6 +22,15 @@ var categoryListTemplate =
     _.template("<a href='categories/<%- category %>'><%-category%></a> (<%- count %>)");
 
 ///// categories
+Georgina.SummaryItemView = Marionette.ItemView.extend({
+    tagName: "tr",
+    template: summaryTemplate
+});
+
+Georgina.SummaryItemView = Marionette.ItemView.extend({
+    tagName: "table"
+});
+
 Georgina.CategoryItemView = Marionette.ItemView.extend({
     tagName: "li",
     template: categoryListTemplate
@@ -33,19 +42,13 @@ Georgina.CategoriesView = Marionette.CollectionView.extend({
 });
 
 Georgina.on("initialize:after", function() {
-    var transactions = Georgina.request("transaction:entities");
     var categories = Georgina.request("category:entities");
-    console.log("categories are ", JSON.stringify(categories));
-
-    var transactionsListView = new Georgina.TransactionsApp.List.Transactions({
-        collection: transactions
-    });
 
     var categoryListView = new Georgina.CategoriesView({
         collection: categories
     });
 
-    Georgina.mainRegion.show(transactionsListView);
     Georgina.categoryRegion.show(categoryListView);
+    Georgina.TransactionsApp.List.Controller.listTransactions();
 });
 Georgina.start();

@@ -1,12 +1,3 @@
-Georgina.SummaryItemView = Marionette.ItemView.extend({
-    tagName: "tr",
-    template: summaryTemplate
-});
-
-Georgina.SummaryItemView = Marionette.ItemView.extend({
-    tagName: "table"
-});
-
 Georgina.module("Entities", function(Entities, Georgina, Backbone, Marionette, $, _){
     Entities.Summary = Backbone.Model.extend({});
 
