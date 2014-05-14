@@ -41,14 +41,4 @@ Georgina.CategoriesView = Marionette.CollectionView.extend({
     itemView: Georgina.CategoryItemView
 });
 
-Georgina.on("initialize:after", function() {
-    var categories = Georgina.request("category:entities");
-
-    var categoryListView = new Georgina.CategoriesView({
-        collection: categories
-    });
-
-    Georgina.categoryRegion.show(categoryListView);
-    Georgina.TransactionsApp.List.Controller.listTransactions();
-});
 Georgina.start();
