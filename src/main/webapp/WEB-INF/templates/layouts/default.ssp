@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Georgina</title>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Georgina</h1>
+      <p class="lead">she counts your money</p>
+      
+      <div class="row">
+        <div id="category-region" class="col-md-3">Transactions</div>
+        <div id="main-region" class="col-md-8">Static content</div>
+      </div>
+    </div>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/json2.js"></script>
+    <script src="/js/underscore.js"></script>
+    <script src="/js/backbone.js"></script>
+    <script src="/js/backbone.marionette.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/entities/category.js"></script>
+    <script src="/js/entities/summary.js"></script>
+    <script src="/js/entities/transaction.js"></script>
+    <script src="/js/apps/transactions/list/list_view.js"></script>
+    <script src="/js/apps/transactions/list/list_controller.js"></script>
+    <script src="/js/apps/transactions/show/show_controller.js"></script>
+    <script src="/js/apps/transactions/show/show_view.js"></script>
+    <script src="/js/index.js"></script>
+  </body>
+</html>
