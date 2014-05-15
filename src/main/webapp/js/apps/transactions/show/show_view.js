@@ -1,11 +1,19 @@
 var transactionShowMarkup = "<div class='panel panel-default'>"+
-    "<div class='panel-heading'>"+
-        "<h3 class='panel-title'><%- category %></h3>"+
-    "</div>"+
     "<div class='panel-body'>"+
-        "<p><%- date.substring(0, 10) %></p>"+
-        "<p><%- description %></p>"+
-        "<p><%- amount %></p>";
+        "<table class='table'>"+
+            "<tr>" +
+                "<td>Date</td><td><%- date.substring(0, 10) %></td>"+
+            "</tr>" +
+            "<tr>" +
+                "<td>Description</td><td><%- description %></td>"+
+            "</tr>" +
+            "<tr>" +
+                "<td>Category</td><td><%- category %></td>"+
+            "</tr>" +
+            "<tr>" +
+                "<td>Amount</td><td><%- amount %></td>";
+            "</tr>" +
+        "</table>"+
     "</div>"+
 "</div>";
 
