@@ -8,7 +8,7 @@
     <div class="container">
       <h1>Georgina</h1>
       <p class="lead">she counts your money</p>
-      
+
       <div class="row">
         <div id="category-region" class="col-md-3">Transactions</div>
         <div id="main-region" class="col-md-8">Static content</div>
@@ -38,6 +38,66 @@
 
     <script type="text/template" id="category-view">
         ${unescape("<a href='categories/<%- category %>'><%-category%></a> (<%- count %>)")}
+    </script>
+
+    <script type="text/template" id="transaction-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </script>
+
+    <script type="text/template" id="transaction-item">
+        ${unescape("<td><%- date.substring(0, 10) %></td>")}
+        ${unescape("<td><%- category %></td>")}
+        ${unescape("<td><%- description.substring(0, 40) %>...</td>")}
+        ${unescape("<td><%- amount %></td>")}
+        <td><a href="#" class='btn btn-info btn-sm js-show'>
+            <i class="icon-zoom-in"></i>More</a>
+        </td>
+    </script>
+
+    <script type="text/template" id="summary">
+        <tr>
+            <td>Start Date</td>
+            ${unescape("<td><%- startDate %></td>")}
+        </tr>
+        <tr>
+            <td>End Date</td>
+            ${unescape("<td><%- endDate %></td>")}
+        </tr>
+        <tr>
+            <td>Category</td>
+            ${unescape("<td><%- category %></td>")}
+        </tr>
+        <tr>
+            <td>Mean</td>
+            ${unescape("<td><%- mean %></td>")}
+        </tr>
+        <tr>
+            <td>Count</td>
+            ${unescape("<td><%- count %></td>")}
+        </tr>
+        <tr>
+            <td>Standard deviation</td>
+            ${unescape("<td><%- standard_deviation %></td>")}
+        </tr>
+    </script>
+
+    <script type="text/template" id="summary-modal">
+        <button class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Large modal</button>
+        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content"></div>
+            </div>
+        </div>
     </script>
 
     <script src="/js/jquery.js"></script>
