@@ -18,9 +18,6 @@ var summaryModalMarkup = "<button class='btn btn-primary' data-toggle='modal' da
         "<div class='modal-content'> ...  </div> </div> </div>";
 var summaryModalTemplate = _.template(summaryModalMarkup);
 
-var categoryListTemplate =
-    _.template("<a href='categories/<%- category %>'><%-category%></a> (<%- count %>)");
-
 ///// categories
 Georgina.SummaryItemView = Marionette.ItemView.extend({
     tagName: "tr",
@@ -33,7 +30,7 @@ Georgina.SummaryItemView = Marionette.ItemView.extend({
 
 Georgina.CategoryItemView = Marionette.ItemView.extend({
     tagName: "li",
-    template: categoryListTemplate
+    template: "#category-view"
 });
 
 Georgina.CategoriesView = Marionette.CollectionView.extend({
