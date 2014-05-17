@@ -114,7 +114,7 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     }
   }
 
-  "POST/" should "fail with bad JSON" in {
+  "POST /" should "fail with bad JSON" in {
     val input = """{"foo":[ {"bar":"baz" }]}"""
     post("/", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
       status should equal(500)
