@@ -83,6 +83,22 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
     countAfter should equal(countBefore)
   }
 
+  it should "store an asset as an asset" in { implicit session =>
+    val t = new Transaction(1L, DateTime.now, "debit", 20.00, "dividends", "Bank")
+    val result = Storage.store(config.env, t)
+
+    val postHoc: Option[String] = sql"""SELECT DISTINCT species
+          FROM transactions
+          WHERE description='Bank'
+          AND amount=20.00""".map(rs => rs.string("species")).single.apply()
+
+    val species = postHoc match {
+      case Some(s) => s
+      case _ => "nope"
+    }
+    species should equal("asset")
+  }
+
   it should "let you select transcations in a date range" in { implicit session =>
     val result = Storage.inDateSpan(config.env,
                                     testDates("startDate"),

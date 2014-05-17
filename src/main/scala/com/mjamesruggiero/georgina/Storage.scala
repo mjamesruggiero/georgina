@@ -29,10 +29,13 @@ object Storage {
 
     t match {
       case Transaction(id, date, species, amt, cat, desc) => {
-        val newCat = new Categorizer(desc).categorize.c
+        val validCat = new Categorizer(desc).categorize.c
+        val validSpecies = if (amt < 0.0) "debit" else "asset"
         sql"""INSERT INTO transactions(id, date, species, description, category, amount)
-              VALUES (null, ${date}, ${species}, ${desc}, ${newCat}, ${amt})""".execute.apply()
+              VALUES (null, ${date}, ${validSpecies}, ${desc}, ${validCat}, ${amt})""".execute.apply()
+        true
       }
+      case _ => false
     }
   }
 
