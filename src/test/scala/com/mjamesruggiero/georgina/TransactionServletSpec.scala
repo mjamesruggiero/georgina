@@ -33,7 +33,7 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   def removeFixture(implicit session: DBSession = AutoSession) {
     sql"""DELETE FROM transactions
           WHERE species='debit'
-          AND (description='Github' OR description='Wells Fargo')""".update.apply()
+          AND (description='Whole Foods' OR description='Github' OR description='Wells Fargo')""".update.apply()
   }
 
   addServlet(new TransactionServlet("test"), "/*")
@@ -112,5 +112,31 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
       status should equal (500)
       body should include ("error: invalid params")
     }
+  }
+
+  "POST/" should "fail with bad JSON" in {
+    val input = """{"foo":[ {"bar":"baz" }]}"""
+    post("/", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
+      status should equal(500)
+      response.body should include("unable to parse JSON")
+    }
+  }
+
+  "POST /" should "succeed with good JSON" in {
+    val input = """
+        {
+          "id": 0,
+          "date": "2014-05-16",
+          "amount": 99.99,
+          "category": "grocery",
+          "description": "Whole Foods"
+        }"""
+    post("/", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
+      status should equal (200)
+    }
+    val earlierDate = DateTime.parse("2014-05-01")
+    val laterDate = DateTime.parse("2014-05-17")
+    val inDb = Storage.withCategory(config.env, "grocery", earlierDate, laterDate)
+    inDb.length should be(1)
   }
 }

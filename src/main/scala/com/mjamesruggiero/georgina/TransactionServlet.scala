@@ -52,4 +52,13 @@ class TransactionServlet(environment: String = "development")  extends GeorginaS
       }
     }
   }
+
+  post("/") {
+    request.body.decodeOption[Line] match {
+      case Some(t) => { Storage.store(environment, JSONParsers.buildTransaction(t)) }
+      case _ => {
+        InternalServerError(GeorginaError("format error", "unable to parse JSON").asJson)
+      }
+    }
+  }
 }
