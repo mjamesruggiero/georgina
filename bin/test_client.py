@@ -4,16 +4,19 @@ import sys
 import csv
 import json
 import requests
+import logging
+logging.basicConfig(level=logging.INFO, format="%(lineno)d\t%(message)s")
 
 
-def post_to_client(payload, endpoint='http://localhost:8080/submit'):
+def post_to_client(payload, endpoint='http://localhost:8080/'):
+    payload_as_json = json.dumps(payload)
     headers = {'content-type': 'application/json'}
-    #print "payload is {p}".format(p=payload)
-    r = requests.post(endpoint, data=payload, headers=headers)
-    print "r is {0}".format(r.text)
+    logging.debug("payload is {p}".format(p=payload_as_json))
+    r = requests.post(endpoint, data=payload_as_json, headers=headers)
+    logging.info("response: {0}".format(r.status_code))
 
 
-def main(csv_filepath):
+def transaction_posts(csv_filepath):
     f = open(filepath, 'rU')
 
     fields = ('date', 'amount', 'asterisk', 'check', 'description')
@@ -23,10 +26,7 @@ def main(csv_filepath):
     for row in raw_csv_rows:
         row = reformat_row(row)
         formatted_rows.append(row)
-
-    final_structure = {'transactions': formatted_rows}
-
-    return json.dumps(final_structure)
+    return formatted_rows
 
 
 def reformat_date(date_string):
@@ -43,12 +43,20 @@ def reformat_row(row):
     new_row['amount'] = float(row['amount'])
     return new_row
 
+
+def main(filepath, number=0):
+    posts = transaction_posts(filepath)
+    if number > 0:
+        posts = posts[:number]
+    for post in posts:
+        post_to_client(post)
+
 if __name__ == '__main__':
     try:
         filepath = sys.argv[1]
-        data = main(filepath)
-        post_to_client(data)
+        LIMIT = 0
+        main(filepath, LIMIT)
     except Exception, err:
-        print "error is {e}".format(e=err)
+        logging.error("error is {e}".format(e=err))
         print "usage: {0} <filepath>".format(os.path.basename(sys.argv[0]))
         sys.exit(1)
