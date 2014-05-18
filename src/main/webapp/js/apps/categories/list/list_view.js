@@ -3,10 +3,12 @@ Georgina.module("CategoriesApp.List", function(List, Georgina, Backbone, Marione
         tagName: "li",
         template: "#category-item",
         events: {
-            "click td a.category-js-show": "showClicked"
+            "click a.category-js-show": "showClicked"
         },
         showClicked: function(e){
-          console.log("you clicked a category");
+          e.preventDefault();
+          e.stopPropagation();
+          this.trigger("category:show", this.model);
         }
     });
 

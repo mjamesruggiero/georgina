@@ -37,7 +37,7 @@
     </script>
 
     <script type="text/template" id="category-item">
-        ${unescape("<a href='categories/<%- category %>'><%-category%></a> (<%- count %>)")}
+        ${unescape("<a class='category-js-show' href='categories/<%- category %>'><%-category%></a> (<%- count %>)")}
     </script>
 
     <script type="text/template" id="transaction-table">
@@ -64,31 +64,25 @@
         </td>
     </script>
 
-    <script type="text/template" id="summary">
-        <tr>
-            <td>Start Date</td>
-            ${unescape("<td><%- startDate %></td>")}
-        </tr>
-        <tr>
-            <td>End Date</td>
-            ${unescape("<td><%- endDate %></td>")}
-        </tr>
-        <tr>
-            <td>Category</td>
-            ${unescape("<td><%- category %></td>")}
-        </tr>
-        <tr>
-            <td>Mean</td>
-            ${unescape("<td><%- mean %></td>")}
-        </tr>
-        <tr>
-            <td>Count</td>
-            ${unescape("<td><%- count %></td>")}
-        </tr>
-        <tr>
-            <td>Standard deviation</td>
-            ${unescape("<td><%- standard_deviation %></td>")}
-        </tr>
+    <script type="text/template" id="summary-view">
+        <table class="table table-striped">
+            <tr>
+                <td>Category</td>
+                ${unescape("<td><%- category %></td>")}
+            </tr>
+            <tr>
+                <td>Mean</td>
+                ${unescape("<td><%- mean %></td>")}
+            </tr>
+            <tr>
+                <td>Count</td>
+                ${unescape("<td><%- count %></td>")}
+            </tr>
+            <tr>
+                <td>Standard deviation</td>
+                ${unescape("<td><%- standard_deviation %></td>")}
+            </tr>
+        </table>
     </script>
 
     <script type="text/template" id="summary-modal">
@@ -116,6 +110,8 @@
     <script src="/js/apps/transactions/show/show_view.js"></script>
     <script src="/js/apps/categories/list/list_view.js"></script>
     <script src="/js/apps/categories/list/list_controller.js"></script>
+    <script src="/js/apps/categories/show/show_controller.js"></script>
+    <script src="/js/apps/categories/show/show_view.js"></script>
     <script src="/js/index.js"></script>
   </body>
 </html>

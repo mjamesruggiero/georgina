@@ -5,9 +5,9 @@ Georgina.module("CategoriesApp.List", function(List, Georgina, Backbone, Marione
             var categoriesListView = new Georgina.CategoriesApp.List.Categories({
                 collection: categories
             });
-            //categoriesListView.on("itemview:category:show", function(childView, model){
-                //Georgina.CategoriesApp.Show.Controller.showCategory(model);
-            //});
+            categoriesListView.on("itemview:category:show", function(childView, model){
+                Georgina.CategoriesApp.Show.Controller.showCategory(model);
+            });
             Georgina.categoryRegion.show(categoriesListView);
         }
     }
