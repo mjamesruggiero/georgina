@@ -32,9 +32,8 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
 
   def removeFixture(implicit session: DBSession = AutoSession) {
     sql"""DELETE FROM transactions
-          WHERE species='debit'
-          AND (description='Whole Foods' OR
-               description='McDonald\'s' OR
+          WHERE (description='Whole Foods' OR
+               description='7-11' OR
                description='PG & E' OR
                description='Github' OR
                description='Wells Fargo')""".update.apply()
@@ -74,7 +73,7 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
           "date":"2014-04-04",
           "category": "unknown",
           "amount": 20.00,
-          "description":"McDonald's"
+          "description":"7-11"
         }
       ]
     }

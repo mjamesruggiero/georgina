@@ -26,14 +26,13 @@ class CategoryServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   }
 
   def buildFixture(implicit session: DBSession = AutoSession) {
-    sql"insert into transactions values (NULL, ${earlierDate}, 'debit', 'CVS', 'medical', 20.00)".update.apply()
-    sql"insert into transactions values (NULL, ${laterDate}, 'debit', 'Trader Joe', 'grocery', 20.00)".update.apply()
+    sql"insert into transactions values (NULL, ${earlierDate}, 'debit', 'CVS', 'medical', -20.00)".update.apply()
+    sql"insert into transactions values (NULL, ${laterDate}, 'debit', 'Trader Joe', 'grocery', -20.00)".update.apply()
   }
 
   def removeFixture(implicit session: DBSession = AutoSession) {
     sql"""DELETE FROM transactions
-          WHERE species='debit'
-          AND (description='Trader Joe' OR description='CVS')""".update.apply()
+          WHERE (description='Trader Joe' OR description='CVS')""".update.apply()
   }
 
   addServlet(new CategoryServlet("test"), "/categories/*")
@@ -56,7 +55,7 @@ class CategoryServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   "GET /categories" should "retrieve summary index for categories" in {
     get("/categories?start=2014-01-15&end=2014-02-05") {
       status should equal (200)
-      body should include ("""{"category":"grocery","count":1,"mean":20,"standard_deviation":0}""")
+      body should include ("""{"category":"grocery","count":1,"mean":-20,"standard_deviation":0}""")
     }
   }
 

@@ -26,11 +26,23 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
   }
 
   override def fixture(implicit session: DBSession) {
-    sql"insert into transactions values (NULL, ${testDates("startDate")}, 'debit', 'Github', 'utilities', 20.00)".update.apply()
+    sql"""INSERT INTO transactions
+          VALUES (NULL,
+                  ${testDates("startDate")},
+                  'debit',
+                  'Github',
+                  'utilities',
+                  -20.00)""".update.apply()
 
     // for the datespan
     val january13 = DateTime.parse("2014-01-13")
-    sql"INSERT into Transactions VALUES (NULL, ${january13}, 'debit', 'January purchase', 'personal', 20.00)".update.apply()
+    sql"""INSERT into Transactions
+          VALUES (NULL,
+                  ${january13},
+                  'debit',
+                  'January purchase',
+                  'personal',
+                  -20.00)""".update.apply()
   }
 
   it should "store a new transaction" in { implicit session =>
@@ -55,7 +67,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
   }
 
   it should "create a new record only if one does not exist" in { implicit session =>
-    val t = new Transaction(1L, DateTime.now, "debit", 20.00, "unknown", "Github")
+    val t = new Transaction(1L, testDates("startDate"), "debit", -20.00, "unknown", "Github")
     val returned: Option[Int] = sql"""SELECT COUNT(*) AS count
           FROM transactions
           WHERE date=${t.date}
@@ -80,6 +92,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
       case Some(num) => num
       case _ => 0
     }
+    countAfter should be > 0
     countAfter should equal(countBefore)
   }
 
@@ -124,7 +137,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
     val result = Storage.categoryStats(config.env,
                                        testDates("startDate"),
                                        testDates("endDate"))
-    val description = result.head.mean
-    description should equal(20.0)
+    val mean = result.last.mean
+    mean should equal(-20.0)
   }
 }
