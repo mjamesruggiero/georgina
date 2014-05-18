@@ -36,7 +36,7 @@
         </div>
     </script>
 
-    <script type="text/template" id="category-view">
+    <script type="text/template" id="category-item">
         ${unescape("<a href='categories/<%- category %>'><%-category%></a> (<%- count %>)")}
     </script>
 
@@ -114,6 +114,8 @@
     <script src="/js/apps/transactions/list/list_controller.js"></script>
     <script src="/js/apps/transactions/show/show_controller.js"></script>
     <script src="/js/apps/transactions/show/show_view.js"></script>
+    <script src="/js/apps/categories/list/list_view.js"></script>
+    <script src="/js/apps/categories/list/list_controller.js"></script>
     <script src="/js/index.js"></script>
   </body>
 </html>

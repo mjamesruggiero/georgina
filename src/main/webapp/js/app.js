@@ -6,12 +6,6 @@ Georgina.addRegions({
 });
 
 Georgina.on("initialize:after", function() {
-    var categories = Georgina.request("category:entities");
-
-    var categoryListView = new Georgina.CategoriesView({
-        collection: categories
-    });
-
-    Georgina.categoryRegion.show(categoryListView);
+    Georgina.CategoriesApp.List.Controller.listCategories();
     Georgina.TransactionsApp.List.Controller.listTransactions();
 });

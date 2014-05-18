@@ -78,6 +78,8 @@ object Storage {
     sql"""SELECT id, date, species, amount, category, description
     FROM transactions
     WHERE category = ${category}
+    AND date >= ${startDate}
+    AND date <= ${endDate}
     ORDER BY date DESC"""
     .map {
       rs => Transaction(
