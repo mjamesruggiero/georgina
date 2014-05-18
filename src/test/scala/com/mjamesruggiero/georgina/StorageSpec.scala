@@ -26,7 +26,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
   }
 
   override def fixture(implicit session: DBSession) {
-    sql"insert into transactions values (NULL, ${DateTime.now}, 'debit', 'Github', 'utilities', 20.00)".update.apply()
+    sql"insert into transactions values (NULL, ${testDates("startDate")}, 'debit', 'Github', 'utilities', 20.00)".update.apply()
 
     // for the datespan
     val january13 = DateTime.parse("2014-01-13")

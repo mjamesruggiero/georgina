@@ -12,6 +12,8 @@ import org.joda.time.DateTime
 
 class CategoryServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   lazy val config = new TestEnv
+  lazy val earlierDate = DateTime.parse("2014-01-01")
+  lazy val laterDate = DateTime.parse("2014-02-01")
 
   before {
     DBsWithEnv(config.env).setupAll()
@@ -24,8 +26,6 @@ class CategoryServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   }
 
   def buildFixture(implicit session: DBSession = AutoSession) {
-    val earlierDate = DateTime.parse("2014-01-01")
-    val laterDate = DateTime.parse("2014-02-01")
     sql"insert into transactions values (NULL, ${earlierDate}, 'debit', 'CVS', 'medical', 20.00)".update.apply()
     sql"insert into transactions values (NULL, ${laterDate}, 'debit', 'Trader Joe', 'grocery', 20.00)".update.apply()
   }
@@ -39,7 +39,7 @@ class CategoryServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   addServlet(new CategoryServlet("test"), "/categories/*")
 
   "GET /categories/:category" should "retrieve transactions with a category" in {
-    get("/categories/medical") {
+    get("/categories/medical?start=2014-01-01&end=2014-02-01") {
       status should equal (200)
       body should include ("CVS")
       body should not include ("Wells Fargo")
