@@ -67,4 +67,10 @@ case class TransactionSet(transactions: List[Transaction]) {
   }
 
   def byDate = transactions.groupBy(_.date)
+
+  def timeSeriesSums: Map[DateTime, Double] = {
+    transactions.groupBy(_.date).map {
+      case(date, t) => (date -> (t.map(_.amount)).sum )
+    }
+  }
 }
