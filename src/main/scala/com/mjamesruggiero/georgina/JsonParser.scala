@@ -16,6 +16,8 @@ case class Line(
   description: String
 )
 
+case class DateTotal(date: String, total: Option[Double])
+
 case class GeorginaError(name: String, message: String)
 
 object JSONParsers {
@@ -60,4 +62,7 @@ object JSONParsers {
 
   implicit def GeorginaErrorCodec: CodecJson[GeorginaError]  =
     casecodec2(GeorginaError.apply, GeorginaError.unapply)("name", "message")
+
+  implicit def DateTotalCodec: CodecJson[DateTotal]  =
+    casecodec2(DateTotal.apply, DateTotal.unapply)("date", "total")
 }

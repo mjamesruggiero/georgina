@@ -69,4 +69,10 @@ class JsonParsersSpec extends ScalatraSuite with FunSuite {
     val expectedJson = """{"name":"param error","message":"Your param is messed up"}"""
     err.asJson.toString should equal(expectedJson)
   }
+
+  test("should encode a date total class") {
+    val rollup = DateTotal("2014-05-20", Some(100.0))
+    val expectedJson = """{"date":"2014-05-20","total":100}"""
+    rollup.asJson.toString should equal(expectedJson)
+  }
 }
