@@ -71,8 +71,17 @@ class JsonParsersSpec extends ScalatraSuite with FunSuite {
   }
 
   test("should encode a date total class") {
-    val rollup = DateTotal("2014-05-20", Some(100.0))
+    val dateTot = DateTotal("2014-05-20", Some(100.0))
     val expectedJson = """{"date":"2014-05-20","total":100}"""
+    dateTot.asJson.toString should equal(expectedJson)
+  }
+
+  test("should encode a seq of DateTotals") {
+    val rollup = List(
+      DateTotal("2014-05-20", Some(100.0)),
+      DateTotal("2014-05-21", Some(200.0))
+    )
+    val expectedJson = """[{"date":"2014-05-20","total":100},{"date":"2014-05-21","total":200}]"""
     rollup.asJson.toString should equal(expectedJson)
   }
 }
