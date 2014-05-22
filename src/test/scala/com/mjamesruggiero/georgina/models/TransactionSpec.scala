@@ -75,16 +75,16 @@ class TransactionSpec extends ScalatraSuite with FunSuite {
     tSet.byDate(january).map(_.amount).sum should equal(1200.0)
   }
 
-  test("#timeSeriesSums groups by date, offers a sum for each") {
+  test("#timeSeriesSums groups by date, offers a sum each day's debits") {
     val january = DateTime.parse("2014-01-01")
     val format = DateTimeFormat.forPattern("yyyy-MM-dd");
     val januaryString = january.toString(format)
     val datedTrans = List(
-        Transaction(1L, DateTime.parse("2013-12-01"), "debit", 100.00, "unknown", "Amazon.com"),
-        Transaction(1L, january, "debit", 200.00, "unknown", "Amazon.com"),
+        Transaction(1L, DateTime.parse("2013-12-01"), "debit", -100.00, "unknown", "Amazon.com"),
+        Transaction(1L, january, "debit", -200.00, "unknown", "Amazon.com"),
         Transaction(1L, january, "asset", 1000.00,"unknown", "Big Company")
     )
     val tSet = new TransactionSet(datedTrans)
-    tSet.timeSeriesSums(januaryString) should equal(1200.0)
+    tSet.timeSeriesSums(januaryString) should equal(-200.0)
   }
 }

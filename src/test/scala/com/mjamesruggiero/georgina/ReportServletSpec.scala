@@ -26,8 +26,8 @@ class ReportServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   def buildFixture(implicit session: DBSession = AutoSession) {
     val earlierDate = DateTime.parse("2014-05-01")
     val laterDate = DateTime.parse("2014-05-02")
-    sql"insert into transactions values (NULL, ${earlierDate}, 'debit', 'Github', 'personal', 20.00)".update.apply()
-    sql"insert into transactions values (NULL, ${laterDate}, 'debit', 'Wells Fargo', 'bank', 20.00)".update.apply()
+    sql"insert into transactions values (NULL, ${earlierDate}, 'debit', 'Github', 'personal', -20.00)".update.apply()
+    sql"insert into transactions values (NULL, ${laterDate}, 'debit', 'Wells Fargo', 'bank', -20.00)".update.apply()
   }
 
   def removeFixture(implicit session: DBSession = AutoSession) {

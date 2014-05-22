@@ -71,7 +71,7 @@ case class TransactionSet(transactions: List[Transaction]) {
 
   def timeSeriesSums: Map[String, Double] = {
     val format = DateTimeFormat.forPattern("yyyy-MM-dd");
-    transactions.groupBy(_.date).map {
+    withSpecies("debit").groupBy(_.date).map {
       case(date, t) => (date.toString(format) -> (t.map(_.amount)).sum )
     }
   }
