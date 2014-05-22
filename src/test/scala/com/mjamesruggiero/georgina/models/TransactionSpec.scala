@@ -85,6 +85,8 @@ class TransactionSpec extends ScalatraSuite with FunSuite {
         Transaction(1L, january, "asset", 1000.00,"unknown", "Big Company")
     )
     val tSet = new TransactionSet(datedTrans)
-    tSet.timeSeriesSums(januaryString) should equal(-200.0)
+    tSet.timeSeriesSums(0) match {
+      case(date, sum) => sum should equal(-100.0)
+    }
   }
 }
