@@ -8,10 +8,9 @@ Georgina.module("Entities", function(Entities, Georgina, Backbone, Marionette, $
     var chartData;
 
     var getChartData = function() {
-        var endpoint = "/transactions";
-        var data = getData(endpoint)["transactions"];
-        var debits = _.filter(data, function(d){ return d.amount < 0; });
-        var values = _.map(debits, function(d){ return d.amount * -1; });
+        var endpoint = "/reports/byday";
+        var data = getData(endpoint);
+        var values = _.map(data, function(d){ return Math.floor(d.total * -1); });
         return {debits: values};
     };
 
