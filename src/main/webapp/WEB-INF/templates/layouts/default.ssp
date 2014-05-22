@@ -88,67 +88,15 @@
 
     <script type="text/template" id="main-chart-view">
         <script type="text/javascript">
-            ${unescape("buildMainChart([<%- debits %>]);")}
+            var options = {
+                w: 740,
+                h: 250,
+                barColor: "green",
+                chartRegion: "#main-chart-region"
+            }
+            ${unescape("Components.mainChart([<%- debits %>], options);")}
         </script>
     </script>
-
-    <script type="text/javascript">
-        var buildMainChart = function(dataset) {
-        //Width and height
-        var w = 740;
-        var h = 250;
-
-        var xScale = d3.scale.ordinal()
-                        .domain(d3.range(dataset.length))
-                        .rangeRoundBands([0, w], 0.05);
-
-        var yScale = d3.scale.linear()
-                        .domain([0, d3.max(dataset)])
-                        .range([0, h]);
-
-        //Create SVG element
-        var svg = d3.select("#main-chart-region")
-                    .append("svg")
-                    .attr("width", w)
-                    .attr("height", h);
-
-        //Create bars
-        svg.selectAll("rect")
-           .data(dataset)
-           .enter()
-           .append("rect")
-           .attr("x", function(d, i) {
-                return xScale(i);
-           })
-           .attr("y", function(d) {
-                return h - yScale(d);
-           })
-           .attr("width", xScale.rangeBand())
-           .attr("height", function(d) {
-                return yScale(d);
-           })
-           .attr("fill", "green");
-
-        //Create labels
-        svg.selectAll("text")
-           .data(dataset)
-           .enter()
-           .append("text")
-           .text(function(d) {
-                return d;
-           })
-           .attr("text-anchor", "middle")
-           .attr("x", function(d, i) {
-                return xScale(i) + xScale.rangeBand() / 2;
-           })
-           .attr("y", function(d) {
-                return h - yScale(d) + 14;
-           })
-           .attr("font-family", "sans-serif")
-           .attr("font-size", "11px")
-           .attr("fill", "white");
-        };
-        </script>
 
     <script src="/js/d3.js"></script>
     <script src="/js/jquery.js"></script>
@@ -158,6 +106,7 @@
     <script src="/js/backbone.js"></script>
     <script src="/js/backbone.marionette.js"></script>
     <script src="/js/app.js"></script>
+    <script src="/js/components.js"></script>
     <script src="/js/entities/category.js"></script>
     <script src="/js/entities/summary.js"></script>
     <script src="/js/entities/transaction.js"></script>
