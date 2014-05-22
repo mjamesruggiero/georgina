@@ -2,6 +2,7 @@ package com.mjamesruggiero.georgina.models
 
 import com.mjamesruggiero.georgina.models._
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import org.scalatest.FunSuite
 import org.scalatra.test.scalatest._
 
@@ -76,12 +77,14 @@ class TransactionSpec extends ScalatraSuite with FunSuite {
 
   test("#timeSeriesSums groups by date, offers a sum for each") {
     val january = DateTime.parse("2014-01-01")
+    val format = DateTimeFormat.forPattern("yyyy-MM-dd");
+    val januaryString = january.toString(format)
     val datedTrans = List(
         Transaction(1L, DateTime.parse("2013-12-01"), "debit", 100.00, "unknown", "Amazon.com"),
         Transaction(1L, january, "debit", 200.00, "unknown", "Amazon.com"),
         Transaction(1L, january, "asset", 1000.00,"unknown", "Big Company")
     )
     val tSet = new TransactionSet(datedTrans)
-    tSet.timeSeriesSums(january) should equal(1200.0)
+    tSet.timeSeriesSums(januaryString) should equal(1200.0)
   }
 }

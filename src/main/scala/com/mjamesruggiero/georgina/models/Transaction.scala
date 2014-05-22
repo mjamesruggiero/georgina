@@ -1,6 +1,7 @@
 package com.mjamesruggiero.georgina.models
 
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import scalikejdbc._, SQLInterpolation._
 
 case class Transaction(
@@ -68,9 +69,10 @@ case class TransactionSet(transactions: List[Transaction]) {
 
   def byDate = transactions.groupBy(_.date)
 
-  def timeSeriesSums: Map[DateTime, Double] = {
+  def timeSeriesSums: Map[String, Double] = {
+    val format = DateTimeFormat.forPattern("yyyy-MM-dd");
     transactions.groupBy(_.date).map {
-      case(date, t) => (date -> (t.map(_.amount)).sum )
+      case(date, t) => (date.toString(format) -> (t.map(_.amount)).sum )
     }
   }
 }
