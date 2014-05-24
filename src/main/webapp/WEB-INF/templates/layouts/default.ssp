@@ -34,6 +34,10 @@
                         ${unescape("<td>Amount</td><td><%- amount %></td>")}
                     </tr>
                 </table>
+                <p class="navbar-text navbar-right">
+                    <a href="#" class='btn btn-info btn-sm js-transaction-back'>
+                    <i class="icon-zoom-in"></i>back</a>
+                </p>
             </div>
         </div>
     </script>
