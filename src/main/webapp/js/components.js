@@ -52,6 +52,10 @@ var Components = {
             .attr("font-family", "sans-serif")
             .attr("font-size", "11px")
             .attr("fill", "white");
+    },
+
+    numberWithCommas: function(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 };
 

@@ -31,7 +31,7 @@
                         ${unescape("<td>Category</td><td><%- category %></td>")}
                     </tr>
                     <tr>
-                        ${unescape("<td>Amount</td><td><%- amount %></td>")}
+                        ${unescape("<td>Amount</td><td><%- Components.numberWithCommas(amount) %></td>")}
                     </tr>
                 </table>
                 <p class="navbar-text navbar-right">
@@ -64,7 +64,7 @@
         ${unescape("<td><%- date.substring(0, 10) %></td>")}
         ${unescape("<td><%- category %></td>")}
         ${unescape("<td><%- description.substring(0, 40) %>...</td>")}
-        ${unescape("<td><%- amount %></td>")}
+        ${unescape("<td><%- Components.numberWithCommas(amount) %></td>")}
         <td><a href="#" class='btn btn-info btn-sm js-show'>
             <i class="icon-zoom-in"></i>More</a>
         </td>
