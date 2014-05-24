@@ -13,6 +13,7 @@
         <div id="category-region" class="col-md-3">Transactions</div>
         <div id="main-chart-region" class="col-md-8">This is where the chart goes</div>
         <div id="main-region" class="col-md-8">Static content</div>
+        <div id="category-filter-region" class="col-md-8"></div>
       </div>
     </div>
 
@@ -66,11 +67,8 @@
     </script>
 
     <script type="text/template" id="summary-view">
+        <h2>${unescape("<td><%- category %></td>")}</h2>
         <table class="table table-striped">
-            <tr>
-                <td>Category</td>
-                ${unescape("<td><%- category %></td>")}
-            </tr>
             <tr>
                 <td>Mean</td>
                 ${unescape("<td><%- mean %></td>")}
@@ -111,6 +109,7 @@
     <script src="/js/entities/summary.js"></script>
     <script src="/js/entities/transaction.js"></script>
     <script src="/js/entities/main_chart.js"></script>
+    <script src="/js/apps/transactions/transactions_app.js"></script>
     <script src="/js/apps/transactions/list/list_view.js"></script>
     <script src="/js/apps/transactions/list/list_controller.js"></script>
     <script src="/js/apps/transactions/show/show_controller.js"></script>
