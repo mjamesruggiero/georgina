@@ -86,9 +86,10 @@
                 ${unescape("<td><%- standard_deviation %></td>")}
             </tr>
         </table>
-        <span><a href="#" class='btn btn-info btn-sm js-back'>
+        <p class="navbar-text navbar-right">
+            <a href="#" class='btn btn-info btn-sm js-summary-back'>
             <i class="icon-zoom-in"></i>back</a>
-        </span>
+        </p>
     </script>
 
     <script type="text/template" id="main-chart-view">

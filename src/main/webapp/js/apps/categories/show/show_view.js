@@ -2,7 +2,7 @@ Georgina.module("CategoriesApp.Show", function(Show, Georgina, Backbone, Marione
     Show.Category = Marionette.ItemView.extend({
         template: "#summary-view",
         events: {
-            "click a.js-back": "showTransactions"
+            "click a.js-summary-back": "showTransactions"
         },
         showTransactions: function(e){
           e.preventDefault();
