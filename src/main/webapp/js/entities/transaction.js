@@ -38,8 +38,4 @@ Georgina.module("Entities", function(Entities, Georgina, Backbone, Marionette, $
     Georgina.reqres.setHandler("transaction:entities", function() {
         return API.getTransactionEntities();
     });
-
-    Georgina.reqres.setHandler("transaction:entities", function() {
-        return API.getTransactionEntities();
-    });
 });
