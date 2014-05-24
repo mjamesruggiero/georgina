@@ -7,6 +7,7 @@ Georgina.module("TransactionsApp.List", function(List, Georgina, Backbone, Mario
             });
             transactionsListView.on("itemview:transaction:show", function(childView, model){
                 Georgina.TransactionsApp.Show.Controller.showTransaction(model);
+                Georgina.trigger("transaction:show", model.get("id"));
             });
             Georgina.mainRegion.show(transactionsListView);
         }
