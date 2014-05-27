@@ -104,6 +104,10 @@
         </script>
     </script>
 
+    <script type="text/template" id="missing-transaction-view">
+        <div class="alert alert-warning">This transaction doesn't exist.</div>
+    </script>
+
     <script src="/js/d3.js"></script>
     <script src="/js/jquery.js"></script>
     <script src="/js/bootstrap.js"></script>

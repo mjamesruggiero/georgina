@@ -3,9 +3,15 @@ Georgina.module("TransactionsApp.Show", function(Show, Georgina, Backbone, Mario
         showTransaction: function(id) {
             var transactions = Georgina.request("transaction:entities");
             var model = transactions.get(id);
-            var transactionView = new Show.Transaction({
-                model: model
-            });
+            var transactionView;
+
+            if (model !== undefined) {
+                transactionView = new Show.Transaction({
+                    model: model
+                });
+            } else  {
+                transactionView = new Show.MissingTransaction();
+            }
 
             Georgina.mainRegion.show(transactionView);
         }
