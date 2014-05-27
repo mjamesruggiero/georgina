@@ -56,6 +56,23 @@ var Components = {
 
     numberWithCommas: function(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+
+    getDateSpans: function() {
+        var startDate = $("#datepicker-start").val();
+        var endDate = $("#datepicker-end").val();
+
+        if(startDate == "" || "undefined" == typeof(startDate)) {
+            startDate = "2013-01-01";
+        }
+        if(endDate == "" || "undefined" == typeof(endDate)) {
+            endDate = this.getCurrentFormattedDate();
+        }
+        return { "startDate": startDate, "endDate": endDate };
+    },
+
+    getCurrentFormattedDate: function() {
+        var rightNow = new Date();
+        return rightNow.toISOString().slice(0, 10);
     }
 };
-

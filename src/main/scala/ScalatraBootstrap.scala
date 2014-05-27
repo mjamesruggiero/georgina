@@ -11,5 +11,6 @@ class ScalatraBootstrap extends LifeCycle with DatabaseClientInit {
     context.mount(new TransactionServlet(env), "/*")
     context.mount(new CategoryServlet(env), "/categories/*")
     context.mount(new ReportServlet(env), "/reports/*")
+    context.mount(new TestServlet(env), "/test/*")
   }
 }
