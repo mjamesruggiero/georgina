@@ -59,8 +59,9 @@ var Components = {
     },
 
     getDateSpans: function() {
-        var startDate = $("#datepicker-start").val();
-        var endDate = $("#datepicker-end").val();
+        //TODO put selectors here
+        var startDate = "",
+            endDate = "";
 
         if(startDate == "" || "undefined" == typeof(startDate)) {
             startDate = "2013-01-01";

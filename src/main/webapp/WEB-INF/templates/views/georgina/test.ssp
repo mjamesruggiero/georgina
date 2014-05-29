@@ -4,6 +4,7 @@
 <div id="fixtures"></div>
 <script src="../js/vendor/mocha.js"></script>
 <script src="../js/vendor/chai.js"></script>
+<script src="../js/vendor/sinon-1.10.0.js"></script>
 <script src="../js/components.js"></script>
 <script>mocha.setup('bdd')</script>
 <script src="../js/test/component_test.js"></script>
