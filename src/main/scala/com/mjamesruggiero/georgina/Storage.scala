@@ -138,4 +138,40 @@ object Storage {
         )
     }.list.apply()
   }
+
+  def getTransaction(env: String, id: Int)(implicit session: DBSession = AutoSession): Option[Transaction] = {
+    initialize(env)
+
+    sql"""SELECT id, date, species, amount, category, description
+          FROM transactions WHERE id = ${id}"""
+    .map {
+      rs => Transaction(
+          rs.long("id"),
+          DateTime.parse(rs.string("date")),
+          rs.string("species"),
+          rs.double("amount"),
+          rs.string("category"),
+          rs.string("description")
+        )
+    }.list.first.apply()
+  }
+
+  def updateTransaction(env: String, t: Transaction)(implicit session: DBSession = AutoSession): Boolean = {
+    t match {
+      case Transaction(id, date, species, amt, cat, desc) => {
+        initialize(env)
+        val validCat = new Categorizer(desc).categorize.c
+        val validSpecies = if (amt < 0.0) "debit" else "asset"
+        sql"""UPDATE transactions SET
+              date = ${date},
+              species = ${validSpecies},
+              description = ${desc},
+              category = ${validCat},
+              amount = ${amt}
+              WHERE id = ${id}""".execute.apply()
+        true
+      }
+      case _ => false
+    }
+  }
 }

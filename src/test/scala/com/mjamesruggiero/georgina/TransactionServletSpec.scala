@@ -122,6 +122,7 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     post("/", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
       status should equal(500)
       response.body should include("unable to parse JSON")
+      response.body should include("unable to parse JSON")
     }
   }
 
@@ -141,5 +142,31 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     val laterDate = DateTime.parse("2014-05-17")
     val inDb = Storage.withCategory(config.env, "grocery", earlierDate, laterDate)
     inDb.length should be(1)
+  }
+
+  "PUT /:id" should "update the record" in {
+    val earlierDate = DateTime.parse("2014-01-01")
+    val existingInRange = Storage.inDateSpan(config.env,
+                                    earlierDate, earlierDate);
+    val id = existingInRange.head.id.toInt
+
+    val input = s"""
+        {
+          "id": ${id},
+          "date": "2014-01-01",
+          "amount": -19.99,
+          "category": "grocery",
+          "description": "Whole Foods"
+        }"""
+
+    put(s"/${id}", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
+      status should equal (200)
+    }
+    val persisted = Storage.getTransaction(config.env, id)
+    val persistedAmount = persisted match {
+        case Some(t) => t.amount
+        case _ => 0
+    }
+    persistedAmount should equal(-19.99)
   }
 }
