@@ -139,7 +139,7 @@ object Storage {
     }.list.apply()
   }
 
-  def getTransaction(env: String, id: Int)(implicit session: DBSession = AutoSession): Option[Transaction] = {
+  def getById(env: String, id: Int)(implicit session: DBSession = AutoSession): Option[Transaction] = {
     initialize(env)
 
     sql"""SELECT id, date, species, amount, category, description
@@ -156,7 +156,7 @@ object Storage {
     }.list.first.apply()
   }
 
-  def updateTransaction(env: String, t: Transaction)(implicit session: DBSession = AutoSession): Boolean = {
+  def update(env: String, t: Transaction)(implicit session: DBSession = AutoSession): Boolean = {
     t match {
       case Transaction(id, date, species, amt, cat, desc) => {
         initialize(env)

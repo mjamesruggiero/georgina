@@ -67,7 +67,7 @@ class TransactionServlet(environment: String = "development")  extends GeorginaS
       case Some(line) => {
         val parsedDate = DateTime.parse(line.date)
         val t = Transaction(params("id").toLong, parsedDate, "debit", line.amount.getOrElse(0.0), line.category, line.description)
-        Storage.updateTransaction(environment, t)
+        Storage.update(environment, t)
       }
       case _ => {
         InternalServerError(GeorginaError("format error", "unable to parse JSON").asJson)

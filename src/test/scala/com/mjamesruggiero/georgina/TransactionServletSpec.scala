@@ -162,7 +162,7 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     put(s"/${id}", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
       status should equal (200)
     }
-    val persisted = Storage.getTransaction(config.env, id)
+    val persisted = Storage.getById(config.env, id)
     val persistedAmount = persisted match {
         case Some(t) => t.amount
         case _ => 0
