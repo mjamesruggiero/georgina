@@ -17,16 +17,6 @@ class TransactionServlet(environment: String = "development")  extends GeorginaS
   import com.mjamesruggiero.georgina.JSONParsers._
 
   get("/") {
-    contentType="text/html"
-    ssp("/georgina/index", "subhead" -> "she counts your money", "title" -> "Georgina")
-  }
-
-  get("/:id") {
-    val transaction = Storage.getById(environment, params("id").toInt)
-    Ok(transaction.asJson)
-  }
-
-  get("/transactions") {
     try {
       val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
       val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
@@ -37,6 +27,11 @@ class TransactionServlet(environment: String = "development")  extends GeorginaS
       catch {
         case _: Throwable => InternalServerError(GeorginaError("param error", "error: invalid params").asJson)
     }
+  }
+
+  get("/:id") {
+    val transaction = Storage.getById(environment, params("id").toInt)
+    Ok(transaction.asJson)
   }
 
   post("/submit") {

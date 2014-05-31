@@ -44,7 +44,6 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   "GET /" should "return 200" in  {
     get("/") {
       status should equal (200)
-      body should include ("Georgina")
     }
   }
 
@@ -103,15 +102,15 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   }
 
   "GET /transactions/<date-params>" should "retrieve transactions in a range" in {
-    get("/transactions?start=2014-01-15&end=2014-02-05") {
+    get("/?start=2014-01-15&end=2014-02-05") {
       status should equal (200)
       body should include ("Wells Fargo")
       body should not include ("Github")
     }
   }
 
-  "GET /transactions/<date-params>" should "handle bad date params" in {
-    get("/transactions?start=2014-01-15&end=fasi82-0x05") {
+  "GET /transactions/all<date-params>" should "handle bad date params" in {
+    get("/?start=2014-01-15&end=fasi82-0x05") {
       status should equal (500)
       body should include ("error: invalid params")
     }
