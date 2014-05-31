@@ -169,4 +169,16 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     }
     persistedAmount should equal(-19.99)
   }
+
+  "GET /:id" should "return a single record" in {
+    val earlierDate = DateTime.parse("2014-01-01")
+    val existingInRange = Storage.inDateSpan(config.env, earlierDate, earlierDate);
+    val id = existingInRange.head.id.toInt
+    val persisted = Storage.getById(config.env, id)
+
+    get(s"/${id}") {
+      status should equal (200)
+      response.body should include("Github")
+    }
+  }
 }

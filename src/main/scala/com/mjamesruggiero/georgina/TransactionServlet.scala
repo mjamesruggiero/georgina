@@ -21,6 +21,11 @@ class TransactionServlet(environment: String = "development")  extends GeorginaS
     ssp("/georgina/index", "subhead" -> "she counts your money", "title" -> "Georgina")
   }
 
+  get("/:id") {
+    val transaction = Storage.getById(environment, params("id").toInt)
+    Ok(transaction.asJson)
+  }
+
   get("/transactions") {
     try {
       val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
