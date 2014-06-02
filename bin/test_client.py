@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format="%(lineno)d\t%(message)s")
 
 
-def post_to_client(payload, endpoint='http://localhost:8080/'):
+def post_to_client(payload, endpoint='http://localhost:8080/transactions/'):
     payload_as_json = json.dumps(payload)
     headers = {'content-type': 'application/json'}
     logging.debug("payload is {p}".format(p=payload_as_json))
