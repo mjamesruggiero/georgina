@@ -20,15 +20,13 @@ object Utils {
   def defaultDateParam: Map[String, String] = {
     val format = DateTimeFormat.forPattern("yyyy-MM-dd");
 
-    val startOfThisMonth: DateTime = new DateTime().
-      dayOfMonth().withMinimumValue()
+    val thirtyDaysAgo: DateTime = new DateTime().minusDays(30);
 
-    val startofNextMonth: DateTime = startOfThisMonth
-      .plusMonths(1).dayOfMonth().withMinimumValue()
+    val today: DateTime = new DateTime();
 
     Map(
-      "startDate" -> startOfThisMonth.toString(format),
-      "endDate" -> startofNextMonth.toString(format)
+      "startDate" -> thirtyDaysAgo.toString(format),
+      "endDate" -> today.toString(format)
     )
   }
 }
