@@ -14,7 +14,7 @@ Georgina.module("Entities", function(Entities, Georgina, Backbone, Marionette, $
     var getsummary = function(category) {
         var endpoint = "/categories/" + category;
         var data = getData(endpoint);
-        return data["transactions"];
+        return data.transactions;
     };
 
     var getData = function(endpoint) {

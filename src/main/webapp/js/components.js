@@ -63,10 +63,10 @@ var Components = {
         var startDate = "",
             endDate = "";
 
-        if(startDate == "" || "undefined" == typeof(startDate)) {
+        if(startDate === "" || "undefined" == typeof(startDate)) {
             startDate = "2013-01-01";
         }
-        if(endDate == "" || "undefined" == typeof(endDate)) {
+        if(endDate === "" || "undefined" == typeof(endDate)) {
             endDate = this.getCurrentFormattedDate();
         }
         return { "startDate": startDate, "endDate": endDate };

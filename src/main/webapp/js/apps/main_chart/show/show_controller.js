@@ -7,6 +7,6 @@ Georgina.module("MainChartApp.Show", function(Show, Georgina, Backbone, Marionet
             });
             Georgina.mainChartRegion.show(mainChartView);
         }
-    }
+    };
 });
 

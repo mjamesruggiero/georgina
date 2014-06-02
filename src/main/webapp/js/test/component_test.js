@@ -22,13 +22,13 @@ describe("Components", function() {
     it("returns a default startDate", function() {
       var expected = "2013-01-01";
       var spans = Components.getDateSpans();
-      expect(spans["startDate"]).to.equal(expected);
+      expect(spans.startDate).to.equal(expected);
     });
 
     it("returns today as default endDate", function() {
       var expected = Components.getCurrentFormattedDate();
       var spans = Components.getDateSpans();
-      expect(spans["endDate"]).to.equal(expected);
+      expect(spans.endDate).to.equal(expected);
     });
   });
 
@@ -48,7 +48,7 @@ describe("Components", function() {
     it("returns a the current date, formatted", function() {
       var expected = "2014-05-29";
       var spans = Components.getDateSpans();
-      expect(spans["endDate"]).to.equal(expected);
+      expect(spans.endDate).to.equal(expected);
     });
   });
 });

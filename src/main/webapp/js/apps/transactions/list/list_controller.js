@@ -10,5 +10,5 @@ Georgina.module("TransactionsApp.List", function(List, Georgina, Backbone, Mario
             });
             Georgina.mainRegion.show(transactionsListView);
         }
-    }
+    };
 });

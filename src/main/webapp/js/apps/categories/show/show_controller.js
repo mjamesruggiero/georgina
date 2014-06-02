@@ -6,6 +6,6 @@ Georgina.module("CategoriesApp.Show", function(Show, Georgina, Backbone, Marione
             });
             Georgina.mainRegion.show(categoryView);
         }
-    }
+    };
 });
 

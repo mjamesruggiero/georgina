@@ -10,5 +10,5 @@ Georgina.module("CategoriesApp.List", function(List, Georgina, Backbone, Marione
             });
             Georgina.categoryRegion.show(categoriesListView);
         }
-    }
+    };
 });
