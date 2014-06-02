@@ -1,8 +1,11 @@
 Georgina.module("Entities", function(Entities, Georgina, Backbone, Marionette, $, _){
-    Entities.Transaction = Backbone.Model.extend({});
+    Entities.Transaction = Backbone.Model.extend({
+        urlRoot: "transactions"
+    });
 
     Entities.TransactionCollection = Backbone.Collection.extend({
-        model: Entities.Transaction
+        model: Entities.Transaction,
+        url: "transactions"
     });
 
     var transactions;
@@ -32,10 +35,26 @@ Georgina.module("Entities", function(Entities, Georgina, Backbone, Marionette, $
                 initializeTransactions();
             }
             return transactions;
+        },
+
+        getTransactionEntity: function(transactionId) {
+            var transaction = new Entities.Transaction({id: transactionId});
+            var defer = $.Deferred();
+            setTimeout(function(){
+                transaction.fetch({
+                    success: function(data){
+                        defer.resolve(data);
+                    }
+                });
+            }, 1000);
+            return defer.promise();
         }
     };
 
     Georgina.reqres.setHandler("transaction:entities", function() {
         return API.getTransactionEntities();
+    });
+    Georgina.reqres.setHandler("transaction:entity", function(id) {
+        return API.getTransactionEntity(id);
     });
 });
