@@ -93,7 +93,7 @@
             barColor: "green",
             chartRegion: "#main-chart-region"
         }
-        ${unescape("Components.mainChart([<%- debits %>], options);")}
+        ${unescape("Components.lineChart([<%- debits %>], options);")}
     </script>
 </script>
 

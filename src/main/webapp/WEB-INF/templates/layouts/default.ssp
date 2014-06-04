@@ -4,6 +4,7 @@
   <head>
     <title>Georgina</title>
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/graphs.css"/>
   </head>
   <body>
     ${unescape(body)}
