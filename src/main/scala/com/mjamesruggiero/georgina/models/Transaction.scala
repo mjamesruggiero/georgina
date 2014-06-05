@@ -72,7 +72,7 @@ case class TransactionSet(transactions: List[Transaction]) {
   def timeSeriesSums: Seq[(String, Double)] = {
     val format = DateTimeFormat.forPattern("yyyy-MM-dd");
     withSpecies("debit").groupBy(_.date).map {
-      case(date, t) => (date.toString(format) -> (t.map(_.amount)).sum )
+      case(date, t) => (date.toString(format) -> (t.map(_.amount * -1)).sum )
     }.toSeq.sortBy(_._1)
   }
 }
