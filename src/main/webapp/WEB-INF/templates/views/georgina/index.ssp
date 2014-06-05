@@ -1,3 +1,12 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="/#transactions">Main</a>
+            <li><a href="/categories">Categories</a>
+        </ul>
+    </div>
+</nav>
+    
 <div class="container">
   <h1>Georgina</h1>
   <p class="lead">she counts your money</p>
