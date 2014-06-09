@@ -36,9 +36,3 @@
     }
 })();
 
-ResigsClass = Class.extend({
-  afun: function() { console.log("you made an object!"); }
-});
-
-var rc = new ResigsClass();
-rc.afun();
