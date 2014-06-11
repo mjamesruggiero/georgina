@@ -141,11 +141,7 @@ var Components = {
             }).responseText;
         var data = JSON.parse(json);
         data = data.transactions;
-        var vals = [];
-        for(i=0; i< data.length; i++) {
-            vals.push(rowT(data[i]));
-        }
-        var rows = vals.join("");
-        $("#main-table tbody").append(rows);
+        var vals = _.map(data, function(o) { return rowT(o); });
+        $("#main-table tbody").append(vals.join(""));
     }
 };
