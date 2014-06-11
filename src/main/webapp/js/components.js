@@ -129,5 +129,23 @@ var Components = {
             // Add the line by appending an svg:path element with the data line we created above
             // do this AFTER the axes above so that the line is above the tick-lines
             graph.append("svg:path").attr("d", line(data));
+    },
+
+    renderTable: function(rowTemplate, tableTemplate) {
+        var rowT = _.template(rowTemplate);
+        var tableT= _.template(tableTemplate);
+        var endpoint = "transactions/";
+        var json = $.ajax({
+            url: endpoint,
+            async: false
+            }).responseText;
+        var data = JSON.parse(json);
+        data = data.transactions;
+        var vals = [];
+        for(i=0; i< data.length; i++) {
+            vals.push(rowT(data[i]));
+        }
+        var rows = vals.join("");
+        $("#main-table tbody").append(rows);
     }
 };

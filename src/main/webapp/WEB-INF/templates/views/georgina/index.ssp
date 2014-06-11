@@ -15,6 +15,19 @@
     <div id="category-region" class="col-md-3">Transactions</div>
     <div id="main-chart-region" class="col-md-8">This is where the chart goes</div>
     <div id="main-region" class="col-md-8">Static content</div>
+        <table id="main-table" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        </table>
+    </div>
     <div id="category-filter-region" class="col-md-8"></div>
   </div>
 </div>
@@ -58,18 +71,18 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-    </tbody>
 </script>
 
 <script type="text/template" id="transaction-item">
-    ${unescape("<td><%- date.substring(0, 10) %></td>")}
-    ${unescape("<td><%- category %></td>")}
-    ${unescape("<td><%- description.substring(0, 40) %>...</td>")}
-    ${unescape("<td><%- Components.numberWithCommas(amount) %></td>")}
-    ${unescape("<td><a href='#transactions/<%- id %>' class='btn btn-info btn-sm js-show'>")}
-        <i class="icon-zoom-in"></i>More</a>
-    </td>
+    <tr>
+        ${unescape("<td><%- date.substring(0, 10) %></td>")}
+        ${unescape("<td><%- category %></td>")}
+        ${unescape("<td><%- description.substring(0, 40) %>...</td>")}
+        ${unescape("<td><%- Components.numberWithCommas(amount) %></td>")}
+        ${unescape("<td><a href='#transactions/<%- id %>' class='btn btn-info btn-sm js-show'>")}
+            <i class="icon-zoom-in"></i>More</a>
+        </td>
+    </tr>
 </script>
 
 <script type="text/template" id="summary-view">
@@ -121,5 +134,5 @@
 <script src="/js/components.js"></script>
 
 <script type="text/javascript">
-
+    Components.renderTable($("#transaction-item").html(), $("#transaction-table").html());
 </script>
