@@ -131,17 +131,8 @@ var Components = {
             graph.append("svg:path").attr("d", line(data));
     },
 
-    renderTable: function(rowTemplate, tableTemplate) {
-        var rowT = _.template(rowTemplate);
-        var tableT= _.template(tableTemplate);
-        var endpoint = "transactions/";
-        var json = $.ajax({
-            url: endpoint,
-            async: false
-            }).responseText;
-        var data = JSON.parse(json);
-        data = data.transactions;
-        var vals = _.map(data, function(o) { return rowT(o); });
-        $("#main-table tbody").append(vals.join(""));
+    templatedStrings: function(templateString, data) {
+        var templ = _.template(templateString);
+        return _.map(data, function(o) { return templ(o); });
     }
 };

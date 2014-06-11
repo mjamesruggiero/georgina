@@ -134,5 +134,16 @@
 <script src="/js/components.js"></script>
 
 <script type="text/javascript">
-    Components.renderTable($("#transaction-item").html(), $("#transaction-table").html());
+    var getData = function(endpoint) {
+        var json = $.ajax({
+            url: endpoint,
+            async: false
+            }).responseText;
+        var data = JSON.parse(json);
+        // TODO fix this in the JSON render
+        return data.transactions;
+    };
+    var rows = Components.templatedStrings($("#transaction-item").html(), 
+                          getData("transactions/"));
+    $("#main-table tbody").append(rows);
 </script>

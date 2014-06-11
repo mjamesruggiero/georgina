@@ -51,4 +51,17 @@ describe("Components", function() {
       expect(spans.endDate).to.equal(expected);
     });
   });
+
+  describe("templatedStrings", function() {
+    it("returns array of templated strings", function() {
+      var expected = ["<td>foo</td>", "<td>bar</td>"];
+      var templ = "<td><%- category %></td>";
+      var rows = [{category: "foo"}, {category: "bar"}];
+      var returned = Components.templatedStrings(templ, rows);
+
+      expect(returned[0]).to.equal(expected[0]);
+      expect(returned[1]).to.equal(expected[1]);
+      expect(returned.length).to.equal(expected.length);
+    });
+  });
 });
