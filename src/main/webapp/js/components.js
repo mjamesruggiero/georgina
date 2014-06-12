@@ -101,7 +101,7 @@ var Components = {
             .y(function(d) {
                 //console.log('Plotting Y value for data point: ' + d + ' to be at: ' + y(d) + " using our yScale.");
                 return y(d);
-            })
+            });
 
             // Add an SVG element with the desired dimensions and margin.
             var graph = d3.select("#main-chart-region").append("svg:svg")
@@ -134,5 +134,13 @@ var Components = {
     templatedStrings: function(templateString, data) {
         var templ = _.template(templateString);
         return _.map(data, function(o) { return templ(o); });
+    },
+
+    getData: function(endpoint) {
+        var json = $.ajax({
+            url: endpoint,
+            async: false
+            }).responseText;
+        return JSON.parse(json);
     }
 };

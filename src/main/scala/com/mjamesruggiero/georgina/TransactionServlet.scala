@@ -21,7 +21,7 @@ class TransactionServlet(environment: String = "development")  extends GeorginaS
       val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
       val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
       val result = Storage.inDateSpan(environment, start, end)
-      val ts = TransactionSet(result)
+      val ts = TransactionSet(result).transactions.toList
       Ok(ts.asJson)
     }
       catch {

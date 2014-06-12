@@ -13,7 +13,7 @@
 
   <div class="row">
     <div id="category-region" class="col-md-3">Transactions</div>
-    <div id="main-chart-region" class="col-md-8">This is where the chart goes</div>
+    <div id="main-chart-region" class="col-md-8"></div>
     <div id="main-region" class="col-md-8">Static content</div>
         <table id="main-table" class="table table-striped">
         <thead>
@@ -134,16 +134,17 @@
 <script src="/js/components.js"></script>
 
 <script type="text/javascript">
-    var getData = function(endpoint) {
-        var json = $.ajax({
-            url: endpoint,
-            async: false
-            }).responseText;
-        var data = JSON.parse(json);
-        // TODO fix this in the JSON render
-        return data.transactions;
-    };
+    // the table
     var rows = Components.templatedStrings($("#transaction-item").html(), 
-                          getData("transactions/"));
+                          Components.getData("transactions/"));
     $("#main-table tbody").append(rows);
+    
+    // the chart
+    var options = {
+        w: 740, h: 250,
+        barColor: "green",
+        chartRegion: "#main-chart-region"
+    }
+    var munged = _.map(Components.getData("/reports/byday"), function(r) { return r.total; });
+    Components.lineChart(munged, options);
 </script>
