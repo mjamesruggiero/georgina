@@ -36,4 +36,8 @@ object Utils {
     val btwn = Range(0, days + 1).toList
     btwn.map(start.plusDays(_))
   }
+
+  def mergeMapWithDefaults(withDefaults: Map[String, Double], withValues: Map[String, Double]) : Map[String, Double]  = {
+    withDefaults ++ withValues.map{ case (k,v) => k -> (v + withDefaults.getOrElse(k,0.0)) }
+  }
 }

@@ -15,11 +15,19 @@ class UtilsSpec extends ScalatraSuite with FunSuite {
     testHash should equal(expected)
   }
 
-  test("getDatesBetween gets all the dates between two dates") {
+  test("#getDatesBetween gets all the dates between two dates") {
     val startDate = DateTime.parse("2013-12-13")
     val endDate = DateTime.parse("2013-12-15")
     val returned = Utils.getDatesBetween(startDate, endDate)
     val expected = List(DateTime.parse("2013-12-13"), DateTime.parse("2013-12-14"),DateTime.parse("2013-12-15") )
+    returned should equal(expected)
+  }
+
+  test("#mergeMapWithDefaults sets a map with defaults or updates value") {
+    val mapWithValues = Map("2014-03-31" -> 29.00, "2014-04-03" -> 40.01)
+    val mapWithZeros = Map("2014-04-01" -> 0.0, "2014-04-02" -> 0.0, "2014-04-03" -> 0.0)
+    val returned = Utils.mergeMapWithDefaults(mapWithZeros, mapWithValues)
+    val expected = Map("2014-03-31" -> 29.00, "2014-04-01" -> 0.0, "2014-04-02" -> 0.0, "2014-04-03" -> 40.01)
     returned should equal(expected)
   }
 }
