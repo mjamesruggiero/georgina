@@ -14,7 +14,7 @@
   <div class="row">
     <div id="category-region" class="col-md-3">Transactions</div>
     <div id="main-chart-region" class="col-md-8"></div>
-    <div id="main-region" class="col-md-8">Static content</div>
+    <div id="main-region" class="col-md-8"></div>
         <table id="main-table" class="table table-striped">
         <thead>
             <tr>
