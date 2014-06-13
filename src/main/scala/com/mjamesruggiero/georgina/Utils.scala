@@ -4,6 +4,7 @@ import com.google.common.hash._
 import com.mjamesruggiero.georgina.models._
 import java.security.MessageDigest
 import org.joda.time.DateTime
+import org.joda.time.Days
 import org.joda.time.format.DateTimeFormat
 
 object Utils {
@@ -28,5 +29,11 @@ object Utils {
       "startDate" -> thirtyDaysAgo.toString(format),
       "endDate" -> today.toString(format)
     )
+  }
+
+  def getDatesBetween(start: DateTime, end: DateTime) : List[DateTime]  = {
+    val days = Days.daysBetween(start, end).getDays
+    val btwn = Range(0, days + 1).toList
+    btwn.map(start.plusDays(_))
   }
 }
