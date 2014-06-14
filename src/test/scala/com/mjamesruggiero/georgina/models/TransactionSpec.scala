@@ -8,6 +8,7 @@ import org.scalatra.test.scalatest._
 
 class TransactionSpec extends ScalatraSuite with FunSuite {
   val tDate = DateTime.parse("2013-12-13")
+  val format = DateTimeFormat.forPattern("yyyy-MM-dd");
 
   test("Transaction behaves like a transaction") {
     val t = Transaction(1L, tDate, "debit", 100.00, "unknown", "Amazon.com")
@@ -77,8 +78,6 @@ class TransactionSpec extends ScalatraSuite with FunSuite {
 
   test("#timeSeriesSums groups by date, offers a sum each day's debits") {
     val january = DateTime.parse("2014-01-01")
-    val format = DateTimeFormat.forPattern("yyyy-MM-dd");
-    val januaryString = january.toString(format)
     val datedTrans = List(
         Transaction(1L, DateTime.parse("2013-12-01"), "debit", -100.00, "unknown", "Amazon.com"),
         Transaction(1L, january, "debit", -200.00, "unknown", "Amazon.com"),
@@ -88,5 +87,14 @@ class TransactionSpec extends ScalatraSuite with FunSuite {
     tSet.timeSeriesSums(0) match {
       case(date, sum) => sum should equal(100.0)
     }
+  }
+
+  test("#timeSeriesSumsWithDefaultZeros assigns zero for any day with no debits") {
+    val missingDayBetween = List(
+        Transaction(1L, DateTime.parse("2013-12-30"), "debit", -100.00, "unknown", "Amazon.com"),
+        Transaction(1L, DateTime.parse("2014-01-01"), "debit", -200.00, "unknown", "Amazon.com")
+    )
+    val result = new TransactionSet(missingDayBetween).timeSeriesSumsWithDefaultZeros
+    result(1) should be ("2013-12-31", 0.0)
   }
 }
