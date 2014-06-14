@@ -84,15 +84,21 @@ case class TransactionSet(transactions: List[Transaction]) {
     }.toSeq.sortBy(_._1)
   }
 
-  // TODO this could probably be made more generic, no?
+  // TODO this does not handle a null datbase result for the sequence
+  // for example: if the date span is 4 days, and there were no transactions,
+  // the orderedDates would be an empty list. And you would not
+  // return a set of four days set to zero
   def timeSeriesSumsWithDefaultZeros: Seq[(String, Double)] = {
     val records = withSpecies("debit").groupBy(_.date).map {
       case(date, t) => (date.toString(format) -> (t.map(_.amount * -1)).sum )
     }
 
+    var withDefaults = Map.empty[String, Double]
     val orderedDates = withSpecies("debit").map((t: Transaction) => t.date).sorted
-    val datesInSpan = Utils.getDatesBetween(orderedDates.head, orderedDates.last)
-    val withDefaults = datesInSpan.map((d: DateTime) => (d.toString(format), 0.0)).toMap
+    if (orderedDates.length > 0) {
+      val datesInSpan = Utils.getDatesBetween(orderedDates.head, orderedDates.last)
+      withDefaults = datesInSpan.map((d: DateTime) => (d.toString(format), 0.0)).toMap
+    }
     Utils.mergeMapWithDefaults(withDefaults, records).toSeq.sortBy(_._1)
   }
 }
