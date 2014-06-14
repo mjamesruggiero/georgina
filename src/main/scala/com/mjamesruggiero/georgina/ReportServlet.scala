@@ -21,7 +21,7 @@ class ReportServlet(environment: String = "development")  extends GeorginaStack 
       val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
       val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
       val ts = TransactionSet(Storage.inDateSpan(environment, start, end))
-      val grouped = ts.timeSeriesSums.map {
+      val grouped = ts.timeSeriesSumsWithDefaultZeros.map {
         case(date, sum) => DateTotal(date, Some(sum))
       }.toList
       Ok(grouped.asJson)

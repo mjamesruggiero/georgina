@@ -1,5 +1,6 @@
 package com.mjamesruggiero.georgina.models
 
+import com.mjamesruggiero.georgina.Utils
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import scalikejdbc._, SQLInterpolation._
@@ -18,7 +19,15 @@ object Transaction extends SQLSyntaxSupport[Transaction] {
     rs.long("id"), rs.dateTime("date"), rs.string("species"), rs.double( "amount" ), rs.string("category"), rs.string("description"))
 }
 
+object Joda {
+    implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
+}
+
 case class TransactionSet(transactions: List[Transaction]) {
+  import Joda._
+
+  val format = DateTimeFormat.forPattern("yyyy-MM-dd");
+
   def averageAmount: Double = {
     val amounts = transactions.map(_.amount)
     amounts.sum / amounts.length
@@ -70,9 +79,20 @@ case class TransactionSet(transactions: List[Transaction]) {
   def byDate = transactions.groupBy(_.date)
 
   def timeSeriesSums: Seq[(String, Double)] = {
-    val format = DateTimeFormat.forPattern("yyyy-MM-dd");
     withSpecies("debit").groupBy(_.date).map {
       case(date, t) => (date.toString(format) -> (t.map(_.amount * -1)).sum )
     }.toSeq.sortBy(_._1)
+  }
+
+  // TODO this could probably be made more generic, no?
+  def timeSeriesSumsWithDefaultZeros: Seq[(String, Double)] = {
+    val records = withSpecies("debit").groupBy(_.date).map {
+      case(date, t) => (date.toString(format) -> (t.map(_.amount * -1)).sum )
+    }
+
+    val orderedDates = withSpecies("debit").map((t: Transaction) => t.date).sorted
+    val datesInSpan = Utils.getDatesBetween(orderedDates.head, orderedDates.last)
+    val withDefaults = datesInSpan.map((d: DateTime) => (d.toString(format), 0.0)).toMap
+    Utils.mergeMapWithDefaults(withDefaults, records).toSeq.sortBy(_._1)
   }
 }
