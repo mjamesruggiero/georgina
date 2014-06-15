@@ -97,4 +97,10 @@ class TransactionSpec extends ScalatraSuite with FunSuite {
     val result = new TransactionSet(missingDayBetween).timeSeriesSumsWithDefaultZeros
     result(1) should be ("2013-12-31", 0.0)
   }
+
+  test("#timeSeriesSumsWithDefaultZeros handles empty TransactionSet") {
+    val ts = List.empty[Transaction]
+    val result = new TransactionSet(ts).timeSeriesSumsWithDefaultZeros
+    assert(result.size === 0)
+  }
 }

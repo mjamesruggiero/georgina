@@ -78,26 +78,29 @@ case class TransactionSet(transactions: List[Transaction]) {
 
   def byDate = transactions.groupBy(_.date)
 
-  def timeSeriesSums: Seq[(String, Double)] = {
+  def timeSeriesSums: Seq[(String, Double)] = timeSeriesMap.toSeq.sortBy(_._1)
+
+  def timeSeriesMap: Map[String, Double] =
     withSpecies("debit").groupBy(_.date).map {
       case(date, t) => (date.toString(format) -> (t.map(_.amount * -1)).sum )
-    }.toSeq.sortBy(_._1)
-  }
+    }
 
-  // TODO this does not handle a null datbase result for the sequence
-  // for example: if the date span is 4 days, and there were no transactions,
-  // the orderedDates would be an empty list. And you would not
-  // return a set of four days set to zero
+  /**
+   * n.b this does not handle an empty datbase result for the sequence;
+   * e.g., say the date span is 4 days, and there were no transactions:
+   * ordered would be an empty list.
+   * This is an API issue w/r/t transaction set being a wrapper
+   * around a query result
+   */
   def timeSeriesSumsWithDefaultZeros: Seq[(String, Double)] = {
     val records = withSpecies("debit").groupBy(_.date).map {
       case(date, t) => (date.toString(format) -> (t.map(_.amount * -1)).sum )
     }
 
-    var withDefaults = Map.empty[String, Double]
-    val orderedDates = withSpecies("debit").map((t: Transaction) => t.date).sorted
-    if (orderedDates.length > 0) {
-      val datesInSpan = Utils.getDatesBetween(orderedDates.head, orderedDates.last)
-      withDefaults = datesInSpan.map((d: DateTime) => (d.toString(format), 0.0)).toMap
+    val ordered = withSpecies("debit").map((t: Transaction) => t.date).sorted
+    val withDefaults = ordered match {
+      case Seq(a, rest @ _ *) => Utils.getDatesBetween(a, rest.last).map((d: DateTime) => (d.toString(format), 0.0)).toMap
+      case _ => Map.empty[String, Double]
     }
     Utils.mergeMapWithDefaults(withDefaults, records).toSeq.sortBy(_._1)
   }
