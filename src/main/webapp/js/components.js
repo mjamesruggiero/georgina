@@ -84,51 +84,48 @@ var Components = {
         var w = 740 - m[1] - m[3]; // width
         var h = 250 - m[0] - m[2]; // height
 
-        // X scale will fit all values from data[] within pixels 0-w
-        var x = d3.scale.linear().domain([0, data.length]).range([0, w]);
-        // Y scale will fit values from 0-10 within pixels h-0 (Note the inverted domain for the y-scale: bigger is up!)
-        //var y = d3.scale.linear().domain([0, 10]).range([h, 0]);
-        // automatically determining max range can work something like this
-        var y = d3.scale.linear().domain([0, d3.max(data)]).range([h, 0]);
+        var parseDate = d3.time.format('%Y-%m-%d').parse;
+        var vals = _.map(data, function(r) { return r.total; });
+        var minTotals = _.min(vals);
+        var maxTotals = _.max(vals);
 
-        // create a line function that can convert data[] into x and y points
+        var minDate = parseDate(data[0].date);
+        var maxDate = parseDate(data[data.length - 1].date);
+
+        var x = d3.time.scale().range([0, w]).domain([minDate, maxDate]);
+        var y = d3.scale.linear().domain([minTotals, maxTotals]).range([h, 0]);
+
         var line = d3.svg.line()
-            // assign the X function to plot our line as we wish
-            .x(function(d,i) {
-                //console.log('Plotting X value for data point: ' + d + ' using index: ' + i + ' to be at: ' + x(i) + ' using our xScale.');
-                return x(i);
+            .x(function(d) {
+                return x(parseDate(d.date));
             })
             .y(function(d) {
-                //console.log('Plotting Y value for data point: ' + d + ' to be at: ' + y(d) + " using our yScale.");
-                return y(d);
+                return y(d.total);
             });
 
-            // Add an SVG element with the desired dimensions and margin.
-            var graph = d3.select("#main-chart-region").append("svg:svg")
-                  .attr("width", w + m[1] + m[3])
-                  .attr("height", h + m[0] + m[2])
-                  .append("svg:g")
-                  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+        var graph = d3.select("#main-chart-region").append("svg:svg")
+              .attr("width", w + m[1] + m[3])
+              .attr("height", h + m[0] + m[2])
+              .append("svg:g")
+              .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
+        var xAxis = d3.svg.axis().scale(x).orient("bottom");
+        var yAxisLeft = d3.svg.axis().scale(y).orient("left");
 
-            var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true);
+        graph.append("svg:g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + h + ")")
+              .call(xAxis);
 
-            graph.append("svg:g")
-                  .attr("class", "x axis")
-                  .attr("transform", "translate(0," + h + ")")
-                  .call(xAxis);
+        graph.append("svg:g")
+              .attr("class", "y axis")
+              .attr("transform", "translate(0,0)")
+              .call(yAxisLeft);
 
-            // create left yAxis
-            var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient("left");
-            // Add the y-axis to the left
-            graph.append("svg:g")
-                  .attr("class", "y axis")
-                  .attr("transform", "translate(0,0)")
-                  .call(yAxisLeft);
-
-            // Add the line by appending an svg:path element with the data line we created above
-            // do this AFTER the axes above so that the line is above the tick-lines
-            graph.append("svg:path").attr("d", line(data));
+        graph.append("svg:path")
+            .datum(data)
+            .attr("class", "line")
+            .attr("d", line);
     },
 
     templatedStrings: function(templateString, data) {

@@ -11,5 +11,4 @@ var options = {
     barColor: "green",
     chartRegion: "#main-chart-region"
 }
-var munged = _.map(Components.getData("/reports/byday"), function(r) { return r.total; });
-Components.lineChart(munged, options);
+Components.lineChart(Components.getData("/reports/byday"), options);
