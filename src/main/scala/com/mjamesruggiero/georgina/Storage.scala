@@ -174,4 +174,24 @@ object Storage {
       case _ => false
     }
   }
+
+  case class DateSummary(date: DateTime, total: Double, count: Int)
+  def byWeek(env: String)(implicit session: DBSession = AutoSession): List[DateSummary] = {
+    initialize(env)
+
+    sql"""SELECT FROM_DAYS(TO_DAYS(date) -MOD(TO_DAYS(date) -1, 7)) AS week_beginning,
+          SUM(amount) AS total,
+          COUNT(*) AS count
+          FROM transactions
+          WHERE species = 'debit'
+          GROUP BY FROM_DAYS(TO_DAYS(date) -MOD(TO_DAYS(date) -1, 7))
+          ORDER BY FROM_DAYS(TO_DAYS(date) -MOD(TO_DAYS(date) -1, 7)) DESC"""
+    .map {
+      rs => DateSummary(
+          DateTime.parse(rs.string("week_beginning")),
+          rs.double("total"),
+          rs.int("count")
+        )
+    }.list.apply()
+  }
 }
