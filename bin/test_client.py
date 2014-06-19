@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-import os
-import sys
 import csv
 import json
-import requests
 import logging
+import os
+import requests
+import sys
+import time
 logging.basicConfig(level=logging.INFO, format="%(lineno)d\t%(message)s")
 
 
@@ -49,6 +50,7 @@ def main(filepath, number=0):
     if number > 0:
         posts = posts[:number]
     for post in posts:
+        time.sleep(1)
         post_to_client(post)
 
 if __name__ == '__main__':
