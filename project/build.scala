@@ -33,6 +33,7 @@ object GeorginaBuild extends Build {
         "org.scalatra"            %% "scalatra-scalate"          % ScalatraVersion,
         "org.scalatra"            %% "scalatra-scalatest"        % "2.2.2" % "test",
         "org.scalaz"              %% "scalaz-core"               % "7.0.6",
+        "org.scalaz.stream"       %% "scalaz-stream"             % "0.4.1",
         "org.scalikejdbc"         %% "scalikejdbc"               % "1.7.4",
         "org.scalikejdbc"         %% "scalikejdbc-config"        % "1.7.5",
         "org.scalikejdbc"         %% "scalikejdbc-interpolation" % "1.7.4",
