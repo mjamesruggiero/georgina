@@ -3,9 +3,10 @@ package com.mjamesruggiero.georgina
 import com.mjamesruggiero.georgina.config._
 import com.mjamesruggiero.georgina.models._
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+import org.scalatest.BeforeAndAfter
 import org.scalatest.fixture.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.BeforeAndAfter
 import scalikejdbc.SQLInterpolation._
 import scalikejdbc._
 import scalikejdbc.config._
@@ -14,6 +15,8 @@ import scalikejdbc.scalatest.AutoRollback
 class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with BeforeAndAfter {
 
   lazy val config = new TestEnv
+
+  lazy val format = DateTimeFormat.forPattern("yyyy-MM-dd");
 
   lazy val testDates: Map[String, org.joda.time.DateTime] = Map(
     "startDate" -> DateTime.parse("2013-12-13"),
@@ -26,6 +29,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
   }
 
   override def fixture(implicit session: DBSession) {
+    sql"""DELETE FROM transactions""".update.apply()
     sql"""INSERT INTO transactions
           VALUES (NULL,
                   ${testDates("startDate")},
@@ -139,5 +143,15 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
                                        testDates("endDate"))
     val mean = result.last.mean
     mean should equal(-20.0)
+  }
+
+  "#byWeek" should "bin debit sums by calendar week" in { implicit session =>
+    val result = Storage.byWeek(config.env)
+    val expected = List(
+      DateSummary(DateTime.parse("2014-01-12"),-20.0,1),
+      DateSummary(DateTime.parse("2013-12-08"),-20.0,1)
+    )
+    // crazy that they can't be compared directly; I blame MySql
+    expected.toString should equal(result.toString)
   }
 }
