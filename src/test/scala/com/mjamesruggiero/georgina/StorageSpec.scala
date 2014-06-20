@@ -49,7 +49,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
                   -20.00)""".update.apply()
   }
 
-  it should "store a new transaction" in { implicit session =>
+  "#store" should "store a transaction" in { implicit session =>
     val returned: Option[Int] = sql"""SELECT COUNT(*) AS count FROM transactions"""
       .map(rs => rs.int("count"))
       .single.apply()
@@ -100,7 +100,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
     countAfter should equal(countBefore)
   }
 
-  it should "store an asset as an asset" in { implicit session =>
+  it should "store assets as assets" in { implicit session =>
     val t = new Transaction(1L, DateTime.now, "debit", 20.00, "dividends", "Bank")
     val result = Storage.store(config.env, t)
 
@@ -116,7 +116,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
     species should equal("asset")
   }
 
-  it should "let you select transcations in a date range" in { implicit session =>
+  "inDateSpan" should "select transcations in a date range" in { implicit session =>
     val result = Storage.inDateSpan(config.env,
                                     testDates("startDate"),
                                     testDates("endDate"))
@@ -124,7 +124,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
     description should equal("January purchase")
   }
 
-  it should "let you select category details" in { implicit session =>
+  "#withCategory" should "select category details" in { implicit session =>
     val category = "utilities"
 
     val result = Storage.withCategory(config.env,
@@ -135,7 +135,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
     description should equal("Github")
   }
 
-  it should "let you select category summary" in { implicit session =>
+  "#categoryStats" should "select category summary" in { implicit session =>
     val category = "utilities"
 
     val result = Storage.categoryStats(config.env,
