@@ -175,7 +175,6 @@ object Storage {
     }
   }
 
-  case class DateSummary(date: DateTime, total: Double, count: Int)
   def byWeek(env: String)(implicit session: DBSession = AutoSession): List[DateSummary] = {
     initialize(env)
 
