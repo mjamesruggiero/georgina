@@ -1,17 +1,18 @@
 package com.mjamesruggiero.georgina
 
 import argonaut._, Argonaut._
-import com.mjamesruggiero.georgina._
-import com.mjamesruggiero.georgina.models._
 import com.mjamesruggiero.georgina.Utils._
+import com.mjamesruggiero.georgina._
+import com.mjamesruggiero.georgina.config._
+import com.mjamesruggiero.georgina.models._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.scalatra._
 import org.slf4j.{Logger, LoggerFactory}
-import scalate.ScalateSupport
 import scala.util.Try
+import scalate.ScalateSupport
 
-class ReportServlet(environment: String = "development")  extends GeorginaStack with ScalateSupport {
+class ReportServlet(config: DBConfig)  extends GeorginaStack with ScalateSupport {
 
   val logger =  LoggerFactory.getLogger(getClass)
   import com.mjamesruggiero.georgina.JSONParsers._

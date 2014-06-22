@@ -15,3 +15,24 @@ class TestEnv extends Config {
 class ProductionConfig extends Config {
   val env = "production"
 }
+
+trait DBConfig {
+  val address: String
+  val username: String
+  val password: String
+  val driverClassName: String
+}
+
+object TestDatabase extends DBConfig {
+  val address = "jdbc:mysql://localhost:3306/georgina_test"
+  val username = "root"
+  val password = "password"
+  val driverClassName = "com.mysql.jdbc.Driver"
+}
+
+object DevelopmentDatabase extends DBConfig {
+  val address = "jdbc:mysql://localhost:3306/georgina_development"
+  val username = "root"
+  val password = "password"
+  val driverClassName = "com.mysql.jdbc.Driver"
+}

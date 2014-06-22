@@ -36,7 +36,7 @@ class ReportServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
                description='Wells Fargo')""".update.apply()
   }
 
-  addServlet(new ReportServlet("test"), "/*")
+  addServlet(new ReportServlet(TestDatabase), "/*")
 
   "GET /byday" should "return 200" in  {
     get("/byday") {

@@ -39,7 +39,7 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
                description='Wells Fargo')""".update.apply()
   }
 
-  addServlet(new TransactionServlet("test"), "/*")
+  addServlet(new TransactionServlet(TestDatabase), "/*")
 
   "GET /" should "return 200" in  {
     get("/") {

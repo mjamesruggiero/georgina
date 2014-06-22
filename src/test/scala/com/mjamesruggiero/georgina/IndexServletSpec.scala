@@ -1,9 +1,10 @@
 package com.mjamesruggiero.georgina
 
 import org.scalatra.test.scalatest._
+import com.mjamesruggiero.georgina.config._
 
 class IndexServletSpec extends ScalatraFlatSpec {
-  addServlet(new IndexServlet("test"), "/*")
+  addServlet(new IndexServlet(TestDatabase), "/*")
 
   "GET /" should "return 200" in  {
     get("/") {

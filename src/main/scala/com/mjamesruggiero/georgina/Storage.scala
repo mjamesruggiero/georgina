@@ -1,9 +1,11 @@
 package com.mjamesruggiero.georgina
 
 import com.mjamesruggiero.georgina.models._
+import com.mjamesruggiero.georgina.config._
 import scalikejdbc.SQLInterpolation._
 import scalikejdbc._
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import scalikejdbc.config._
 import scalaz.Reader._
 
@@ -12,6 +14,9 @@ case class QueryException(message:String) extends Exception(message)
 case class CategorySummary(category: String, count: Int, mean: Double, sttdev: Double)
 
 object Storage {
+
+  import DB._
+  lazy val format = DateTimeFormat.forPattern("yyyy-MM-dd");
 
   def initialize(env: String) = {
     DBsWithEnv(env).setupAll()
@@ -115,28 +120,32 @@ object Storage {
     }.list.apply()
   }
 
-  def categoryStats(env: String,
-                    startDate: DateTime,
-                    endDate: DateTime)(implicit session: DBSession = AutoSession): List[CategorySummary] = {
+  def categoryStats(startDate: DateTime,
+                    endDate: DateTime,
+                    config: DBConfig): List[CategorySummary] = {
 
-
-    initialize(env)
-
-    sql"""SELECT category, COUNT(*) category_count,
+    val queryString = s"""SELECT category, COUNT(*) category_count,
     AVG(amount) mean, STD(amount) stddev
     FROM transactions
-    WHERE date >= ${startDate}
-    AND date <= ${endDate}
+    WHERE date >= '${startDate.toString(format)}'
+    AND date <= '${endDate.toString(format)}'
     GROUP BY category
     ORDER by category_count DESC"""
-    .map {
-      rs => CategorySummary(
-          rs.string("category"),
-          rs.int("category_count"),
-          rs.double("mean"),
-          rs.double("stddev")
+    val resultMap = Map(
+      "category" -> mkString,
+      "category_count" -> mkInt,
+      "mean" -> mkDouble,
+      "stddev" -> mkDouble
+    )
+    val result = query(queryString, resultMap, config) map { row =>
+      CategorySummary(
+          row.get("category").fold("")(asString),
+          row.get("category_count").fold(0)(asInt),
+          row.get("mean").fold(0.0)(asDouble),
+          row.get("stddev").fold(0.0)(asDouble)
         )
-    }.list.apply()
+    }
+    result
   }
 
   def getById(env: String, id: Int)(implicit session: DBSession = AutoSession): Option[Transaction] = {
@@ -175,22 +184,24 @@ object Storage {
     }
   }
 
-  def byWeek(env: String)(implicit session: DBSession = AutoSession): List[DateSummary] = {
-    initialize(env)
-
-    sql"""SELECT FROM_DAYS(TO_DAYS(date) -MOD(TO_DAYS(date) -1, 7)) AS week_beginning,
+  def byWeek(config: DBConfig): List[DateSummary] = {
+    val q = """SELECT FROM_DAYS(TO_DAYS(date) -MOD(TO_DAYS(date) -1, 7)) AS week_beginning,
           SUM(amount) AS total,
           COUNT(*) AS count
           FROM transactions
           WHERE species = 'debit'
           GROUP BY FROM_DAYS(TO_DAYS(date) -MOD(TO_DAYS(date) -1, 7))
           ORDER BY FROM_DAYS(TO_DAYS(date) -MOD(TO_DAYS(date) -1, 7)) DESC"""
-    .map {
-      rs => DateSummary(
-          DateTime.parse(rs.string("week_beginning")),
-          rs.double("total"),
-          rs.int("count")
-        )
-    }.list.apply()
+    val result = query(q,
+                      Map("week_beginning" -> mkString,
+                          "total" -> mkDouble,
+                          "count" -> mkInt), config) map { row =>
+              DateSummary(
+                DateTime.parse(row.get("week_beginning").fold("")(asString)),
+                row.get("total").fold(0.0)(asDouble),
+                row.get("count").fold(0)(asInt)
+              )
+            }
+    result
   }
 }

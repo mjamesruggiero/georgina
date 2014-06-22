@@ -1,5 +1,6 @@
 package com.mjamesruggiero.georgina
 
+import com.mjamesruggiero.georgina.config._
 import argonaut._, Argonaut._
 import com.mjamesruggiero.georgina._
 import com.mjamesruggiero.georgina.models._
@@ -13,7 +14,7 @@ import scala.util.Try
 
 case class ServletException(message: String) extends Exception(message)
 
-class CategoryServlet(environment: String = "development")  extends GeorginaStack with ScalateSupport {
+class CategoryServlet(config: DBConfig)  extends GeorginaStack with ScalateSupport {
 
   val logger =  LoggerFactory.getLogger(getClass)
   import com.mjamesruggiero.georgina.JSONParsers._
@@ -22,7 +23,7 @@ class CategoryServlet(environment: String = "development")  extends GeorginaStac
     try {
       val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
       val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
-      val data = Storage.categoryStats(environment, start, end)
+      val data = Storage.categoryStats(start, end, config)
       Ok(data.asJson)
     }
       catch {

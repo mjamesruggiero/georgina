@@ -1,18 +1,11 @@
 package com.mjamesruggiero.georgina
 
-//import com.sharethrough.DBConfig
+import com.mjamesruggiero.georgina.config._
 import java.math.BigDecimal
 import java.sql.{ DriverManager, ResultSet }
 import scala.util.{ Try, Success, Failure }
 import scalaz.concurrent.Task
 import scalaz.stream.{ io, Process }
-
-trait DBConfig {
-  val address: String
-  val username: String
-  val password: String
-  val driverClassName: String
-}
 
 trait Database {
   type Row = Map[String, Any]
@@ -20,8 +13,6 @@ trait Database {
 }
 
 object DB extends Database {
-
-  // Define query, column mapping, db config and execute query - return List[Row]
   def query(
     queryString: String,
     columnMapping: Map[String, (ResultSet, String) => Any],
@@ -96,5 +87,4 @@ object DB extends Database {
       }
     }
   }
-
 }

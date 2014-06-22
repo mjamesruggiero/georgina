@@ -35,7 +35,7 @@ class CategoryServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
           WHERE (description='Trader Joe' OR description='CVS')""".update.apply()
   }
 
-  addServlet(new CategoryServlet("test"), "/categories/*")
+  addServlet(new CategoryServlet(TestDatabase), "/categories/*")
 
   "GET /categories/:category" should "retrieve transactions with a category" in {
     get("/categories/medical?start=2014-01-01&end=2014-02-01") {

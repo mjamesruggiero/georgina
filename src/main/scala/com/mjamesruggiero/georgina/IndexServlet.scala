@@ -1,10 +1,11 @@
 package com.mjamesruggiero.georgina
 
 import com.mjamesruggiero.georgina._
+import com.mjamesruggiero.georgina.config._
 import org.scalatra._
 import scalate.ScalateSupport
 
-class IndexServlet(environment: String = "development")  extends GeorginaStack with ScalateSupport {
+class IndexServlet(config: DBConfig)  extends GeorginaStack with ScalateSupport {
 
   get("/") {
     contentType="text/html"
