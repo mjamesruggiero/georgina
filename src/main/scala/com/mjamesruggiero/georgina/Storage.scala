@@ -1,13 +1,11 @@
 package com.mjamesruggiero.georgina
 
-import com.mjamesruggiero.georgina.models._
 import com.mjamesruggiero.georgina.config._
-import scalikejdbc.SQLInterpolation._
-import scalikejdbc._
+import com.mjamesruggiero.georgina.models._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import scalikejdbc.config._
 import scalaz.Reader._
+import scala.util.{Success, Failure}
 
 case class QueryException(message:String) extends Exception(message)
 
@@ -18,106 +16,123 @@ object Storage {
   import DB._
   lazy val format = DateTimeFormat.forPattern("yyyy-MM-dd");
 
-  def initialize(env: String) = {
-    DBsWithEnv(env).setupAll()
-    ConnectionPool('default).borrow()
-  }
-
-  def storeLinesAsTransactions(env: String, lines: List[Line])(implicit session: DBSession = AutoSession) = {
+  def storeLinesAsTransactions(lines: List[Line], config: DBConfig) = {
+    val config = TestDatabase
     val transactions = lines.map { l => JSONParsers.buildTransaction(l) }
-    val nonExistentTransactions = transactions.filter(! exists(env, _))
-    nonExistentTransactions.map { t => store(env, t) }
+    val nonExistentTransactions = transactions.filter(! exists(_, config))
+    nonExistentTransactions.map { t => store(t, config) }
   }
 
-  def store(env: String, t: Transaction)(implicit session: DBSession = AutoSession) = {
-    initialize(env)
-
+  def store(t: Transaction, config: DBConfig) = {
     t match {
       case Transaction(id, date, species, amt, cat, desc) => {
-        if (! exists(env, t)) {
+        if (! exists(t, config)) {
           val validCat = new Categorizer(desc).categorize.c
           val validSpecies = if (amt < 0.0) "debit" else "asset"
-          sql"""INSERT INTO transactions(id, date, species, description, category, amount)
-                VALUES (null, ${date}, ${validSpecies}, ${desc}, ${validCat}, ${amt})""".execute.apply()
-          true
+          val q = s"""
+            INSERT INTO transactions(id, date, species,
+              description, category, amount)
+            VALUES (null, '${date.toString(format)}',
+              '${validSpecies}', '${desc}', '${validCat}', ${amt})"""
+          DB.update(q, config)
         }
       }
       case _ => false
     }
   }
 
-  def exists(env: String, t: Transaction)(implicit session: DBSession = AutoSession): Boolean = {
-    initialize(env)
-
-    val returned: Option[Int] = sql"""SELECT COUNT(*) AS count
+  def exists(t: Transaction, config: DBConfig): Boolean = {
+    val q = s"""SELECT COUNT(*) AS count
           FROM transactions
-          WHERE date=${t.date}
-          AND species=${t.species}
-          AND description=${t.description}
-          AND amount=${t.amount}""".map(rs => rs.int("count")).single.apply()
+          WHERE date= '${t.date}'
+          AND species= '${t.species}'
+          AND description= '${t.description}'
+          AND amount=${t.amount}"""
+    val result = query(q, Map("count" -> mkInt), config) map { row =>
+      row.get("count").fold(0)(asInt)
+    }
+    result.headOption.getOrElse(0) > 0
+  }
 
-      returned match {
-        case Some(count) => count > 0
-        case _ => false
+  def all(config: DBConfig): List[Transaction] = {
+    val q = """SELECT id, date, species, amount, category, description
+          FROM transactions ORDER BY date, amount DESC"""
+
+    val resultMap = Map(
+      "id" -> mkLong,
+      "date" -> mkString,
+      "species" -> mkString,
+      "amount" -> mkDouble,
+      "category" -> mkString,
+      "description" -> mkString
+    )
+
+    query(q, resultMap, config) map { row =>
+      Transaction(
+        row.get("id").fold(0L)(asLong),
+        DateTime.parse(row.get("date").fold("")(asString)),
+        row.get("species").fold("")(asString),
+        row.get("amount").fold(0.0)(asDouble),
+        row.get("category").fold("")(asString),
+        row.get("description").fold("")(asString)
+      )
     }
   }
 
-  def all(env: String)(implicit session: DBSession = AutoSession): List[Transaction] = {
-    initialize(env)
+  def withCategory(category: String, start: DateTime, end: DateTime, config: DBConfig): List[Transaction] = {
+    val queryString = s"""SELECT id, date, species, amount, category, description
+    FROM transactions
+    WHERE category = '${category}'
+    AND date >= '${start.toString(format)}'
+    AND date <= '${end.toString(format)}'
+    ORDER BY date DESC"""
 
-    sql"""SELECT id, date, species, amount, category, description
-          FROM transactions ORDER BY date, amount DESC"""
-    .map {
-      rs => Transaction(
-          rs.long("id"),
-          DateTime.parse(rs.string("date")),
-          rs.string("species"),
-          rs.double("amount"),
-          rs.string("category"),
-          rs.string("description")
+    // TODO DRY this up
+    val resultMap = Map(
+      "id" -> mkLong,
+      "date" -> mkString,
+      "species" -> mkString,
+      "amount" -> mkDouble,
+      "category" -> mkString,
+      "description" -> mkString
+    )
+
+    query(queryString, resultMap, config) map { row =>
+      Transaction(
+        row.get("id").fold(0L)(asLong),
+        DateTime.parse(row.get("date").fold("")(asString)),
+        row.get("species").fold("")(asString),
+        row.get("amount").fold(0.0)(asDouble),
+        row.get("category").fold("")(asString),
+        row.get("description").fold("")(asString)
         )
-    }.list.apply()
+    }
   }
 
-  def withCategory(env: String, category: String, start: DateTime, end: DateTime)(implicit session: DBSession = AutoSession): List[Transaction] = {
-    initialize(env)
-
-    sql"""SELECT id, date, species, amount, category, description
+  def inDateSpan(startDate: DateTime, endDate: DateTime, config: DBConfig) = {
+    val sql = s"""SELECT id, date, species, amount, category, description
     FROM transactions
-    WHERE category = ${category}
-    AND date >= ${start}
-    AND date <= ${end}
+    WHERE date >= '${startDate.toString(format)}'
+    AND date <= '${endDate.toString(format)}'
     ORDER BY date DESC"""
-    .map {
-      rs => Transaction(
-          rs.long("id"),
-          DateTime.parse(rs.string("date")),
-          rs.string("species"),
-          rs.double("amount"),
-          rs.string("category"),
-          rs.string("description")
-        )
-    }.list.apply()
-  }
-
-  def inDateSpan(env: String, startDate: DateTime, endDate: DateTime)(implicit session: DBSession = AutoSession): List[Transaction] = {
-    initialize(env)
-
-    sql"""SELECT id, date, species, amount, category, description
-    FROM transactions
-    WHERE date >= ${startDate}
-    AND date <= ${endDate}
-    ORDER BY date DESC"""
-    .map {
-      rs => Transaction(
-          rs.long("id"),
-          DateTime.parse(rs.string("date")),
-          rs.string("species"),
-          rs.double("amount"),
-          rs.string("category"),
-          rs.string("description")
-        )
-    }.list.apply()
+    val resultMap = Map(
+          "id" -> mkLong,
+          "date" -> mkString,
+          "species" -> mkString,
+          "amount" -> mkDouble,
+          "category" -> mkString,
+          "description" -> mkString
+      )
+    query(sql, resultMap, config) map { row =>
+      Transaction(
+        row.get("id").fold(0L)(asLong),
+        DateTime.parse(row.get("date").fold("")(asString)),
+        row.get("species").fold("")(asString),
+        row.get("amount").fold(0.0)(asDouble),
+        row.get("category").fold("")(asString),
+        row.get("description").fold("")(asString)
+      )
+    }
   }
 
   def categoryStats(startDate: DateTime,
@@ -137,48 +152,58 @@ object Storage {
       "mean" -> mkDouble,
       "stddev" -> mkDouble
     )
-    val result = query(queryString, resultMap, config) map { row =>
+    query(queryString, resultMap, config) map { row =>
       CategorySummary(
-          row.get("category").fold("")(asString),
-          row.get("category_count").fold(0)(asInt),
-          row.get("mean").fold(0.0)(asDouble),
-          row.get("stddev").fold(0.0)(asDouble)
-        )
+        row.get("category").fold("")(asString),
+        row.get("category_count").fold(0)(asInt),
+        row.get("mean").fold(0.0)(asDouble),
+        row.get("stddev").fold(0.0)(asDouble)
+      )
     }
-    result
   }
 
-  def getById(env: String, id: Int)(implicit session: DBSession = AutoSession): Option[Transaction] = {
-    initialize(env)
-
-    sql"""SELECT id, date, species, amount, category, description
+  def getById(id: Int, config: DBConfig): Option[Transaction] = {
+    val q = s"""SELECT id, date, species, amount, category, description
           FROM transactions WHERE id = ${id}"""
-    .map {
-      rs => Transaction(
-          rs.long("id"),
-          DateTime.parse(rs.string("date")),
-          rs.string("species"),
-          rs.double("amount"),
-          rs.string("category"),
-          rs.string("description")
+
+    val resultMap = Map(
+      "id" -> mkLong,
+      "date" -> mkString,
+      "species" -> mkString,
+      "amount" -> mkDouble,
+      "category" -> mkString,
+      "description" -> mkString
+    )
+
+    query(q, resultMap, config). map { row =>
+      Transaction(
+        row.get("id").fold(0L)(asLong),
+        DateTime.parse(row.get("date").fold("")(asString)),
+        row.get("species").fold("")(asString),
+        row.get("amount").fold(0.0)(asDouble),
+        row.get("category").fold("")(asString),
+        row.get("description").fold("")(asString)
         )
-    }.list.first.apply()
+    }.headOption
   }
 
-  def update(env: String, t: Transaction)(implicit session: DBSession = AutoSession): Boolean = {
+  def update(t: Transaction, config: DBConfig): Boolean = {
     t match {
       case Transaction(id, date, species, amt, cat, desc) => {
-        initialize(env)
         val validCat = new Categorizer(desc).categorize.c
         val validSpecies = if (amt < 0.0) "debit" else "asset"
-        sql"""UPDATE transactions SET
-              date = ${date},
-              species = ${validSpecies},
-              description = ${desc},
-              category = ${validCat},
+        val q = s"""UPDATE transactions SET
+              date = '${date.toString(format)}',
+              species = '${validSpecies}',
+              description = '${desc}',
+              category = '${validCat}',
               amount = ${amt}
-              WHERE id = ${id}""".execute.apply()
-        true
+              WHERE id = ${id}"""
+        // TODO add some logging for failure case
+        DB.update(q, TestDatabase) match {
+          case Success(_) => true
+          case Failure(ex) => false
+        }
       }
       case _ => false
     }

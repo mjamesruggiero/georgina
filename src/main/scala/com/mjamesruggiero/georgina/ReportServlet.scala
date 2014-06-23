@@ -21,7 +21,7 @@ class ReportServlet(config: DBConfig)  extends GeorginaStack with ScalateSupport
     try {
       val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
       val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
-      val ts = TransactionSet(Storage.inDateSpan(environment, start, end))
+      val ts = TransactionSet(Storage.inDateSpan(start, end, config))
       val grouped = ts.timeSeriesSumsWithDefaultZeros.map {
         case(date, sum) => DateTotal(date, Some(sum))
       }.toList

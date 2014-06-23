@@ -35,7 +35,7 @@ class CategoryServlet(config: DBConfig)  extends GeorginaStack with ScalateSuppo
     try {
       val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
       val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
-      val data = Storage.withCategory(environment, params("category"), start, end)
+      val data = Storage.withCategory(params("category"), start, end, config)
       val ts = TransactionSet(data)
       Ok(ts.asJson)
     }

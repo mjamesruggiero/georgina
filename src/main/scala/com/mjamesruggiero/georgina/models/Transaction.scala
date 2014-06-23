@@ -3,7 +3,6 @@ package com.mjamesruggiero.georgina.models
 import com.mjamesruggiero.georgina.Utils
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import scalikejdbc._, SQLInterpolation._
 
 case class Transaction(
 id: Long,
@@ -12,12 +11,6 @@ species: String,
 amount: Double,
 category: String,
 description: String)
-
-object Transaction extends SQLSyntaxSupport[Transaction] {
-  override val tableName = "transactions"
-  def apply(rs: WrappedResultSet) = new Transaction(
-    rs.long("id"), rs.dateTime("date"), rs.string("species"), rs.double( "amount" ), rs.string("category"), rs.string("description"))
-}
 
 object Joda {
     implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)

@@ -21,7 +21,7 @@ class TransactionServlet(config: DBConfig)  extends GeorginaStack with ScalateSu
     try {
       val start = DateTime.parse(params.getOrElse("start", defaultDateParam("startDate")))
       val end = DateTime.parse(params.getOrElse("end", defaultDateParam("endDate")))
-      val result = Storage.inDateSpan(environment, start, end)
+      val result = Storage.inDateSpan(start, end, config)
       val ts = TransactionSet(result).transactions.toList
       Ok(ts.asJson)
     }
@@ -31,7 +31,7 @@ class TransactionServlet(config: DBConfig)  extends GeorginaStack with ScalateSu
   }
 
   get("/:id") {
-    val transaction = Storage.getById(environment, params("id").toInt)
+    val transaction = Storage.getById(params("id").toInt, config)
     Ok(transaction.asJson)
   }
 
@@ -45,7 +45,7 @@ class TransactionServlet(config: DBConfig)  extends GeorginaStack with ScalateSu
           )
         }
         case (l:List[Line]) => {
-          Storage.storeLinesAsTransactions(environment, l)
+          Storage.storeLinesAsTransactions(l, config)
         }
       }
       case _ => {
@@ -56,7 +56,7 @@ class TransactionServlet(config: DBConfig)  extends GeorginaStack with ScalateSu
 
   post("/") {
     request.body.decodeOption[Line] match {
-      case Some(t) => { Storage.store(environment, JSONParsers.buildTransaction(t)) }
+      case Some(t) => { Storage.store(JSONParsers.buildTransaction(t), config) }
       case _ => {
         InternalServerError(GeorginaError("format error", "unable to parse JSON").asJson)
       }
@@ -68,7 +68,7 @@ class TransactionServlet(config: DBConfig)  extends GeorginaStack with ScalateSu
       case Some(line) => {
         val parsedDate = DateTime.parse(line.date)
         val t = Transaction(params("id").toLong, parsedDate, "debit", line.amount.getOrElse(0.0), line.category, line.description)
-        Storage.update(environment, t)
+        Storage.update(t, config)
       }
       case _ => {
         InternalServerError(GeorginaError("format error", "unable to parse JSON").asJson)

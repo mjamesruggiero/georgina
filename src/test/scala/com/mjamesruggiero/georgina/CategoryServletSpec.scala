@@ -1,38 +1,45 @@
 package com.mjamesruggiero.georgina
 
+import org.joda.time.format.DateTimeFormat
 import org.scalatra.test.scalatest._
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
-import scalikejdbc.SQLInterpolation._
-import scalikejdbc._
-import scalikejdbc.config._
-import scalikejdbc.scalatest.AutoRollback
 import com.mjamesruggiero.georgina.config._
 import org.joda.time.DateTime
+import scala.util.{Success, Failure}
 
 class CategoryServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   lazy val config = new TestEnv
   lazy val earlierDate = DateTime.parse("2014-01-01")
   lazy val laterDate = DateTime.parse("2014-02-01")
+  lazy val format = DateTimeFormat.forPattern("yyyy-MM-dd");
+
+  val fixtures = List(
+    s"INSERT INTO transactions VALUES (NULL, '${earlierDate.toString(format)}', 'debit', 'CVS', 'medical', -20.00)",
+    s"INSERT INTO transactions VALUES (NULL, '${laterDate.toString(format)}', 'debit', 'Trader Joe', 'grocery', -20.00)"
+  )
+
+  val deletes = List(
+    "DELETE FROM transactions"
+  )
 
   before {
-    DBsWithEnv(config.env).setupAll()
-    ConnectionPool('default).borrow()
-    buildFixture
+    // TODO extract this to a test helper
+    for(q : String <- fixtures) {
+      DB.update(q, TestDatabase) match {
+        case Success(_) => None
+        case Failure(ex) => fail(s"database setup error: ${ex.getMessage}")
+      }
+    }
   }
 
   after {
-    removeFixture
-  }
-
-  def buildFixture(implicit session: DBSession = AutoSession) {
-    sql"insert into transactions values (NULL, ${earlierDate}, 'debit', 'CVS', 'medical', -20.00)".update.apply()
-    sql"insert into transactions values (NULL, ${laterDate}, 'debit', 'Trader Joe', 'grocery', -20.00)".update.apply()
-  }
-
-  def removeFixture(implicit session: DBSession = AutoSession) {
-    sql"""DELETE FROM transactions
-          WHERE (description='Trader Joe' OR description='CVS')""".update.apply()
+    for(q : String <- deletes) {
+      DB.update(q, TestDatabase) match {
+        case Success(_) => None
+        case Failure(ex) => fail(s"database setup error: ${ex.getMessage}")
+      }
+    }
   }
 
   addServlet(new CategoryServlet(TestDatabase), "/categories/*")

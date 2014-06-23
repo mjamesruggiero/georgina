@@ -5,15 +5,15 @@ import com.mjamesruggiero.georgina.models._
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import org.scalatest.BeforeAndAfter
+import org.scalatest.FunSuite
 import org.scalatest.fixture.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
-import scalikejdbc.SQLInterpolation._
-import scalikejdbc._
-import scalikejdbc.config._
-import scalikejdbc.scalatest.AutoRollback
+import org.scalatra.test.scalatest._
 import scala.util.{Success, Failure}
 
-class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with BeforeAndAfter {
+class StorageSpec extends ScalatraFlatSpec with BeforeAndAfter {
+
+  import DB._
 
   lazy val config = new TestEnv
 
@@ -24,14 +24,9 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
     "endDate" -> DateTime.parse("2014-01-13")
   )
 
-
-
   before {
-    DBsWithEnv(config.env).setupAll()
-    ConnectionPool('default).borrow()
-
     val fixtures = List("DELETE FROM transactions",
-    """INSERT into Transactions
+    """INSERT into transactions
           VALUES (NULL,
                   '2013-12-13',
                   'debit',
@@ -75,114 +70,86 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
     }
   }
 
-  //override def fixture(implicit session: DBSession) {
-    //sql"""DELETE FROM transactions""".update.apply()
-    //sql"""INSERT INTO transactions
-          //VALUES (NULL,
-                  //${testDates("startDate")},
-                  //'debit',
-                  //'Github',
-                  //'utilities',
-                  //-20.00)""".update.apply()
+  "#store" should "store a transaction" in {
+    val currentCountQuery = "SELECT COUNT(*) AS count FROM transactions"
 
-    //// for the datespan
-    //val january13 = DateTime.parse("2014-01-13")
-    //sql"""INSERT into Transactions
-          //VALUES (NULL,
-                  //${january13},
-                  //'debit',
-                  //'January purchase',
-                  //'personal',
-                  //-20.00)""".update.apply()
-  //}
+    // TODO extract this into a test helper
+    val countBefore = query(currentCountQuery, Map("count" -> mkInt), TestDatabase). map { row =>
+      row.get("count").fold(0)(asInt)
+    }.headOption.getOrElse(0)
 
-  //"#store" should "store a transaction" in { implicit session =>
-    //val returned: Option[Int] = sql"""SELECT COUNT(*) AS count FROM transactions"""
-      //.map(rs => rs.int("count"))
-      //.single.apply()
-    //val countBefore = returned match {
-      //case Some(num) => num
-      //case _ => 0
-    //}
+    val t = new Transaction(1L, DateTime.now, "debit", 20.00, "unknown", "Office Depot")
+    Storage.store(t, TestDatabase)
 
-    //val t = new Transaction(1L, DateTime.now, "debit", 20.00, "unknown", "Office Depot")
-    //Storage.store(config.env, t)
-    //val postHoc: Option[Int] = sql"""SELECT COUNT(*) AS count FROM transactions"""
-      //.map(rs => rs.int("count"))
-      //.single.apply()
-    //val countAfter = postHoc match {
-      //case Some(num) => num
-      //case _ => 0
-    //}
-    //countAfter should equal(countBefore + 1)
-  //}
+    val countAfter = query(currentCountQuery, Map("count" -> mkInt), TestDatabase). map { row =>
+      row.get("count").fold(0)(asInt)
+    }.headOption.getOrElse(0)
 
-  //it should "create a new record only if one does not exist" in { implicit session =>
-    //val t = new Transaction(1L, testDates("startDate"), "debit", -20.00, "unknown", "Github")
-    //val returned: Option[Int] = sql"""SELECT COUNT(*) AS count
-          //FROM transactions
-          //WHERE date=${t.date}
-          //AND species=${t.species}
-          //AND description=${t.description}
-          //AND amount=${t.amount}""".map(rs => rs.int("count")).single.apply()
+    countAfter should equal(countBefore + 1)
+  }
 
-    //val countBefore = returned match {
-      //case Some(num) => num
-      //case _ => 0
-    //}
-    //Storage.store(config.env, t)
+  it should "create a new record only if one does not exist" in {
+    val t = new Transaction(1L, testDates("startDate"), "debit", -20.00, "unknown", "Github")
+    val currentCountQuery =s"""SELECT COUNT(*) AS count
+          FROM transactions
+          WHERE date = '${t.date.toString(format)}'
+          AND species = '${t.species}'
+          AND description= '${t.description}'
+          AND amount = ${t.amount}"""
 
-    //val postHoc: Option[Int] = sql"""SELECT COUNT(*) AS count
-          //FROM transactions
-          //WHERE date=${t.date}
-          //AND species=${t.species}
-          //AND description=${t.description}
-          //AND amount=${t.amount}""".map(rs => rs.int("count")).single.apply()
+    val countBefore = query(currentCountQuery, Map("count" -> mkInt), TestDatabase). map { row =>
+      row.get("count").fold(0)(asInt)
+    }.headOption.getOrElse(0)
 
-    //val countAfter = postHoc match {
-      //case Some(num) => num
-      //case _ => 0
-    //}
-    //countAfter should be > 0
-    //countAfter should equal(countBefore)
-  //}
+    Storage.store(t, TestDatabase)
 
-  //it should "store assets as assets" in { implicit session =>
-    //val t = new Transaction(1L, DateTime.now, "debit", 20.00, "dividends", "Bank")
-    //val result = Storage.store(config.env, t)
+    val countAfter = query(currentCountQuery, Map("count" -> mkInt), TestDatabase). map { row =>
+      row.get("count").fold(0)(asInt)
+    }.headOption.getOrElse(0)
 
-    //val postHoc: Option[String] = sql"""SELECT DISTINCT species
-          //FROM transactions
-          //WHERE description='Bank'
-          //AND amount=20.00""".map(rs => rs.string("species")).single.apply()
+    countAfter should be > 0
+    countAfter should equal(countBefore)
+  }
 
-    //val species = postHoc match {
-      //case Some(s) => s
-      //case _ => "nope"
-    //}
-    //species should equal("asset")
-  //}
+  it should "store assets as assets" in {
+    val t = new Transaction(1L, DateTime.now, "debit", 20.00, "dividends", "fake bank transfer")
+    val result = Storage.store(t, TestDatabase)
 
-  //"inDateSpan" should "select transcations in a date range" in { implicit session =>
-    //val result = Storage.inDateSpan(config.env,
-                                    //testDates("startDate"),
-                                    //testDates("endDate"))
-    //val description = result.head.description
-    //description should equal("January purchase")
-  //}
+    val speciesQuery = """
+          SELECT DISTINCT species
+          FROM transactions WHERE description='fake bank transfer'
+          AND amount=20.00"""
 
-  //"#withCategory" should "select category details" in { implicit session =>
-    //val category = "utilities"
+    val species = query(speciesQuery, Map("species" -> mkString), TestDatabase). map { row =>
+      row.get("species").fold("")(asString)
+    }.headOption match {
+      case Some(s) => s
+      case _ => ""
+    }
+    species should equal("asset")
+  }
 
-    //val result = Storage.withCategory(config.env,
-                                      //category,
-                                      //testDates("startDate"),
-                                      //testDates("endDate"))
-    //val description = result.head.description
-    //description should equal("Github")
-  //}
+  "#inDateSpan" should "select transcations in a date range" in {
+    val result = Storage.inDateSpan(testDates("startDate"),
+                                    testDates("endDate"),
+                                    TestDatabase)
+    val description = result.head.description
+    description should equal("test purchase 2")
+  }
 
-  "#categoryStats" should "select category summary" in { implicit session =>
+  "#withCategory" should "select category details" in {
+    val category = "utilities"
+
+    val result = Storage.withCategory(category,
+                                      testDates("startDate"),
+                                      testDates("endDate"),
+                                      TestDatabase)
+
+    val description = result.head.description
+    description should equal("Github")
+  }
+
+  "#categoryStats" should "select category summary" in {
     val category = "utilities"
 
     val result = Storage.categoryStats(testDates("startDate"),
@@ -192,7 +159,7 @@ class StorageSpec extends FlatSpec with AutoRollback with ShouldMatchers with Be
     mean should equal(-20.0)
   }
 
-  "#byWeek" should "bin debit sums by calendar week" in { implicit session =>
+  "#byWeek" should "bin debit sums by calendar week" in {
     val result = Storage.byWeek(TestDatabase)
     val expected = List(
       DateSummary(DateTime.parse("2014-01-12"),-40.0,2),
