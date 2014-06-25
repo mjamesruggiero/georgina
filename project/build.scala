@@ -34,10 +34,6 @@ object GeorginaBuild extends Build {
         "org.scalatra"            %% "scalatra-scalatest"        % "2.2.2" % "test",
         "org.scalaz"              %% "scalaz-core"               % "7.0.6",
         "org.scalaz.stream"       %% "scalaz-stream"             % "0.4.1",
-        "org.scalikejdbc"         %% "scalikejdbc"               % "1.7.4",
-        "org.scalikejdbc"         %% "scalikejdbc-config"        % "1.7.5",
-        "org.scalikejdbc"         %% "scalikejdbc-interpolation" % "1.7.4",
-        "org.scalikejdbc"         %% "scalikejdbc-test"          % "1.7.5"   % "test",
         "org.eclipse.jetty.orbit" % "javax.servlet"              % "3.0.0.v201112011016" % "container;provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
