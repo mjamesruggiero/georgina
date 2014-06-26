@@ -36,6 +36,9 @@ object GeorginaBuild extends Build {
         "org.scalaz.stream"       %% "scalaz-stream"             % "0.4.1",
         "org.eclipse.jetty.orbit" % "javax.servlet"              % "3.0.0.v201112011016" % "container;provided;test" artifacts (Artifact("javax.servlet", "jar", "jar"))
       ),
+
+      parallelExecution in Test := false,
+
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(
           TemplateConfig(
