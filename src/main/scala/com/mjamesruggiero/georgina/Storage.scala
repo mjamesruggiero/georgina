@@ -15,6 +15,14 @@ object Storage {
 
   import DB._
   lazy val format = DateTimeFormat.forPattern("yyyy-MM-dd");
+  lazy val transactionRowConverter = Map(
+      "id" -> mkLong,
+      "date" -> mkString,
+      "species" -> mkString,
+      "amount" -> mkDouble,
+      "category" -> mkString,
+      "description" -> mkString
+    )
 
   def storeLinesAsTransactions(lines: List[Line], config: DBConfig) = {
     val config = TestDatabase
@@ -58,16 +66,7 @@ object Storage {
     val q = """SELECT id, date, species, amount, category, description
           FROM transactions ORDER BY date, amount DESC"""
 
-    val resultMap = Map(
-      "id" -> mkLong,
-      "date" -> mkString,
-      "species" -> mkString,
-      "amount" -> mkDouble,
-      "category" -> mkString,
-      "description" -> mkString
-    )
-
-    query(q, resultMap, config) map { row =>
+    query(q, transactionRowConverter, config) map { row =>
       Transaction(
         row.get("id").fold(0L)(asLong),
         DateTime.parse(row.get("date").fold("")(asString)),
@@ -87,17 +86,7 @@ object Storage {
     AND date <= '${end.toString(format)}'
     ORDER BY date DESC"""
 
-    // TODO DRY this up
-    val resultMap = Map(
-      "id" -> mkLong,
-      "date" -> mkString,
-      "species" -> mkString,
-      "amount" -> mkDouble,
-      "category" -> mkString,
-      "description" -> mkString
-    )
-
-    query(queryString, resultMap, config) map { row =>
+    query(queryString, transactionRowConverter, config) map { row =>
       Transaction(
         row.get("id").fold(0L)(asLong),
         DateTime.parse(row.get("date").fold("")(asString)),
@@ -115,15 +104,7 @@ object Storage {
     WHERE date >= '${startDate.toString(format)}'
     AND date <= '${endDate.toString(format)}'
     ORDER BY date DESC"""
-    val resultMap = Map(
-          "id" -> mkLong,
-          "date" -> mkString,
-          "species" -> mkString,
-          "amount" -> mkDouble,
-          "category" -> mkString,
-          "description" -> mkString
-      )
-    query(sql, resultMap, config) map { row =>
+    query(sql, transactionRowConverter, config) map { row =>
       Transaction(
         row.get("id").fold(0L)(asLong),
         DateTime.parse(row.get("date").fold("")(asString)),
@@ -166,16 +147,7 @@ object Storage {
     val q = s"""SELECT id, date, species, amount, category, description
           FROM transactions WHERE id = ${id}"""
 
-    val resultMap = Map(
-      "id" -> mkLong,
-      "date" -> mkString,
-      "species" -> mkString,
-      "amount" -> mkDouble,
-      "category" -> mkString,
-      "description" -> mkString
-    )
-
-    query(q, resultMap, config). map { row =>
+    query(q, transactionRowConverter, config). map { row =>
       Transaction(
         row.get("id").fold(0L)(asLong),
         DateTime.parse(row.get("date").fold("")(asString)),
@@ -217,16 +189,17 @@ object Storage {
           WHERE species = 'debit'
           GROUP BY FROM_DAYS(TO_DAYS(date) -MOD(TO_DAYS(date) -1, 7))
           ORDER BY FROM_DAYS(TO_DAYS(date) -MOD(TO_DAYS(date) -1, 7)) DESC"""
-    val result = query(q,
-                      Map("week_beginning" -> mkString,
-                          "total" -> mkDouble,
-                          "count" -> mkInt), config) map { row =>
-              DateSummary(
-                DateTime.parse(row.get("week_beginning").fold("")(asString)),
-                row.get("total").fold(0.0)(asDouble),
-                row.get("count").fold(0)(asInt)
-              )
-            }
-    result
+    val resultMap = Map(
+      "week_beginning" -> mkString,
+      "total" -> mkDouble,
+      "count" -> mkInt
+    )
+    query(q, resultMap, config) map { row =>
+      DateSummary(
+        DateTime.parse(row.get("week_beginning").fold("")(asString)),
+        row.get("total").fold(0.0)(asDouble),
+        row.get("count").fold(0)(asInt)
+      )
+    }
   }
 }
