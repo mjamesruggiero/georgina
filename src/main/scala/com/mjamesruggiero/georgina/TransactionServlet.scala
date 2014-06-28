@@ -46,6 +46,7 @@ class TransactionServlet(config: DBConfig)  extends GeorginaStack with ScalateSu
         }
         case (l:List[Line]) => {
           Storage.storeLinesAsTransactions(l, config)
+          status(201)
         }
       }
       case _ => {

@@ -74,7 +74,7 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     }
     """
     post("submit", input.getBytes("UTF-8"), Map("Content-Type" -> "application/json")) {
-      status should equal(200)
+      status should equal(201)
     }
   }
 
