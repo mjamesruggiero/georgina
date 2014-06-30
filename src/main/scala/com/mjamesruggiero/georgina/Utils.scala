@@ -6,6 +6,7 @@ import java.security.MessageDigest
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.format.DateTimeFormat
+import scala.util.{Try, Success, Failure}
 
 object Utils {
   def transactionHash(t: Transaction): String = {
@@ -39,5 +40,10 @@ object Utils {
 
   def mergeMapWithDefaults(withDefaults: Map[String, Double], withValues: Map[String, Double]) : Map[String, Double]  = {
     withDefaults ++ withValues.map{ case (k,v) => k -> (v + withDefaults.getOrElse(k,0.0)) }
+  }
+
+  def canonicalDate(d: DateTime) : String = {
+    def parseDate(d: DateTime): Try[String] = Try(d.toString(DateTimeFormat.forPattern("yyyy-MM-dd")))
+    parseDate(d).getOrElse("")
   }
 }

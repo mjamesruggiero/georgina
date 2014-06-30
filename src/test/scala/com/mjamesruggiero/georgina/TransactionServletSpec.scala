@@ -12,11 +12,10 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   lazy val config = new TestEnv
   lazy val earlierDate = DateTime.parse("2014-01-01")
   lazy val laterDate = DateTime.parse("2014-02-01")
-  lazy val format = DateTimeFormat.forPattern("yyyy-MM-dd");
 
   val fixtures = List(
-    s"insert into transactions values (NULL, '${earlierDate.toString(format)}', 'debit', 'Github', 'personal', 20.00)",
-    s"insert into transactions values (NULL, '${laterDate.toString(format)}', 'debit', 'Wells Fargo', 'bank', 20.00)"
+    s"insert into transactions values (NULL, '${Utils.canonicalDate(earlierDate)}', 'debit', 'Github', 'personal', 20.00)",
+    s"insert into transactions values (NULL, '${Utils.canonicalDate(laterDate)}', 'debit', 'Wells Fargo', 'bank', 20.00)"
   )
 
   before {

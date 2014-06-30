@@ -30,4 +30,8 @@ class UtilsSpec extends ScalatraSuite with FunSuite {
     val expected = Map("2014-03-31" -> 29.00, "2014-04-01" -> 0.0, "2014-04-02" -> 0.0, "2014-04-03" -> 40.01)
     returned should equal(expected)
   }
+
+  test("#canonicalDate returns a predictably-formatted date string") {
+    Utils.canonicalDate(DateTime.parse("2013-12-13")) should equal("2013-12-13")
+  }
 }

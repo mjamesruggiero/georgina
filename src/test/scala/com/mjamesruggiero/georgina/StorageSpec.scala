@@ -3,7 +3,6 @@ package com.mjamesruggiero.georgina
 import com.mjamesruggiero.georgina.config._
 import com.mjamesruggiero.georgina.models._
 import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
 import org.scalatest.BeforeAndAfter
 import org.scalatest.FunSuite
 import org.scalatest.fixture.FlatSpec
@@ -16,8 +15,6 @@ class StorageSpec extends ScalatraFlatSpec with BeforeAndAfter {
   import DB._
 
   lazy val config = new TestEnv
-
-  lazy val format = DateTimeFormat.forPattern("yyyy-MM-dd");
 
   lazy val testDates: Map[String, org.joda.time.DateTime] = Map(
     "startDate" -> DateTime.parse("2013-12-13"),
@@ -92,7 +89,7 @@ class StorageSpec extends ScalatraFlatSpec with BeforeAndAfter {
     val t = new Transaction(1L, testDates("startDate"), "debit", -20.00, "unknown", "Github")
     val currentCountQuery =s"""SELECT COUNT(*) AS count
           FROM transactions
-          WHERE date = '${t.date.toString(format)}'
+          WHERE date = '${Utils.canonicalDate(t.date)}'
           AND species = '${t.species}'
           AND description= '${t.description}'
           AND amount = ${t.amount}"""
