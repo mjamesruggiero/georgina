@@ -3,7 +3,6 @@ package com.mjamesruggiero.georgina
 import com.mjamesruggiero.georgina.config._
 import com.mjamesruggiero.georgina.models._
 import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
 import scalaz.Reader._
 import scala.util.{Success, Failure}
 
@@ -14,7 +13,6 @@ case class CategorySummary(category: String, count: Int, mean: Double, sttdev: D
 object Storage {
 
   import DB._
-  lazy val format = DateTimeFormat.forPattern("yyyy-MM-dd");
   lazy val transactionRowConverter = Map(
       "id" -> mkLong,
       "date" -> mkString,
@@ -40,7 +38,7 @@ object Storage {
           val q = s"""
             INSERT INTO transactions(id, date, species,
               description, category, amount)
-            VALUES (null, '${date.toString(format)}',
+            VALUES (null, '${Utils.canonicalDate(date)}',
               '${validSpecies}', '${desc}', '${validCat}', ${amt})"""
           DB.update(q, config)
         }
@@ -82,8 +80,8 @@ object Storage {
     val queryString = s"""SELECT id, date, species, amount, category, description
     FROM transactions
     WHERE category = '${category}'
-    AND date >= '${start.toString(format)}'
-    AND date <= '${end.toString(format)}'
+    AND date >= '${Utils.canonicalDate(start)}'
+    AND date <= '${Utils.canonicalDate(end)}'
     ORDER BY date DESC"""
 
     query(queryString, transactionRowConverter, config) map { row =>
@@ -101,8 +99,8 @@ object Storage {
   def inDateSpan(startDate: DateTime, endDate: DateTime, config: DBConfig) = {
     val sql = s"""SELECT id, date, species, amount, category, description
     FROM transactions
-    WHERE date >= '${startDate.toString(format)}'
-    AND date <= '${endDate.toString(format)}'
+    WHERE date >= '${Utils.canonicalDate(startDate)}'
+    AND date <= '${Utils.canonicalDate(endDate)}'
     ORDER BY date DESC"""
     query(sql, transactionRowConverter, config) map { row =>
       Transaction(
@@ -123,8 +121,8 @@ object Storage {
     val queryString = s"""SELECT category, COUNT(*) category_count,
     AVG(amount) mean, STD(amount) stddev
     FROM transactions
-    WHERE date >= '${startDate.toString(format)}'
-    AND date <= '${endDate.toString(format)}'
+    WHERE date >= '${Utils.canonicalDate(startDate)}'
+    AND date <= '${Utils.canonicalDate(endDate)}'
     GROUP BY category
     ORDER by category_count DESC"""
     val resultMap = Map(
@@ -165,7 +163,7 @@ object Storage {
         val validCat = new Categorizer(desc).categorize.c
         val validSpecies = if (amt < 0.0) "debit" else "asset"
         val q = s"""UPDATE transactions SET
-              date = '${date.toString(format)}',
+              date = '${Utils.canonicalDate(date)}',
               species = '${validSpecies}',
               description = '${desc}',
               category = '${validCat}',

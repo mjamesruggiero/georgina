@@ -2,7 +2,6 @@ package com.mjamesruggiero.georgina.models
 
 import com.mjamesruggiero.georgina.Utils
 import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
 
 case class Transaction(
 id: Long,
@@ -18,8 +17,6 @@ object Joda {
 
 case class TransactionSet(transactions: List[Transaction]) {
   import Joda._
-
-  val format = DateTimeFormat.forPattern("yyyy-MM-dd");
 
   def averageAmount: Double = {
     val amounts = transactions.map(_.amount)
@@ -75,7 +72,7 @@ case class TransactionSet(transactions: List[Transaction]) {
 
   def timeSeriesMap: Map[String, Double] =
     withSpecies("debit").groupBy(_.date).map {
-      case(date, t) => (date.toString(format) -> (t.map(_.amount * -1)).sum )
+      case(date, t) => (Utils.canonicalDate(date) -> (t.map(_.amount * -1)).sum )
     }
 
   /**
@@ -87,12 +84,12 @@ case class TransactionSet(transactions: List[Transaction]) {
    */
   def timeSeriesSumsWithDefaultZeros: Seq[(String, Double)] = {
     val records = withSpecies("debit").groupBy(_.date).map {
-      case(date, t) => (date.toString(format) -> (t.map(_.amount * -1)).sum )
+      case(date, t) => (Utils.canonicalDate(date) -> (t.map(_.amount * -1)).sum )
     }
 
     val ordered = withSpecies("debit").map((t: Transaction) => t.date).sorted
     val withDefaults = ordered match {
-      case Seq(a, rest @ _ *) => Utils.getDatesBetween(a, rest.last).map((d: DateTime) => (d.toString(format), 0.0)).toMap
+      case Seq(a, rest @ _ *) => Utils.getDatesBetween(a, rest.last).map((d: DateTime) => (Utils.canonicalDate(d), 0.0)).toMap
       case _ => Map.empty[String, Double]
     }
     Utils.mergeMapWithDefaults(withDefaults, records).toSeq.sortBy(_._1)

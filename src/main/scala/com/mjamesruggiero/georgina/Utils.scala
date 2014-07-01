@@ -9,9 +9,10 @@ import org.joda.time.format.DateTimeFormat
 import scala.util.{Try, Success, Failure}
 
 object Utils {
+  val format = DateTimeFormat.forPattern("yyyy-MM-dd");
+
   def transactionHash(t: Transaction): String = {
     val hasher = Hashing.sha256
-    val format = DateTimeFormat.forPattern("yyyy-MM-dd");
     val str = Seq(t.date.toString(format),
         t.species,
         t.amount.toString,
@@ -20,7 +21,6 @@ object Utils {
   }
 
   def defaultDateParam: Map[String, String] = {
-    val format = DateTimeFormat.forPattern("yyyy-MM-dd");
 
     val thirtyDaysAgo: DateTime = new DateTime().minusDays(30);
 

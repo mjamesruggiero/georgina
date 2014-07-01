@@ -1,6 +1,5 @@
 package com.mjamesruggiero.georgina
 
-import org.joda.time.format.DateTimeFormat
 import org.scalatra.test.scalatest._
 import org.scalatest.FunSuite
 import org.scalatest.BeforeAndAfter
@@ -12,11 +11,10 @@ class CategoryServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   lazy val config = new TestEnv
   lazy val earlierDate = DateTime.parse("2014-01-01")
   lazy val laterDate = DateTime.parse("2014-02-01")
-  lazy val format = DateTimeFormat.forPattern("yyyy-MM-dd");
 
   val fixtures = List(
-    s"INSERT INTO transactions VALUES (NULL, '${earlierDate.toString(format)}', 'debit', 'CVS', 'medical', -20.00)",
-    s"INSERT INTO transactions VALUES (NULL, '${laterDate.toString(format)}', 'debit', 'Trader Joe', 'grocery', -20.00)"
+    s"INSERT INTO transactions VALUES (NULL, '${Utils.canonicalDate(earlierDate)}', 'debit', 'CVS', 'medical', -20.00)",
+    s"INSERT INTO transactions VALUES (NULL, '${Utils.canonicalDate(laterDate)}', 'debit', 'Trader Joe', 'grocery', -20.00)"
   )
 
   val deletes = List(
