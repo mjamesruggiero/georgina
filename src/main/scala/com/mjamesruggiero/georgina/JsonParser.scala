@@ -18,6 +18,8 @@ case class Line(
 
 case class DateTotal(date: String, total: Option[Double])
 
+case class WeekSummary(date: String, total: Double, count: Int)
+
 case class GeorginaError(name: String, message: String)
 
 object JSONParsers {
@@ -65,4 +67,7 @@ object JSONParsers {
 
   implicit def DateTotalCodec: CodecJson[DateTotal]  =
     casecodec2(DateTotal.apply, DateTotal.unapply)("date", "total")
+
+  implicit def WeekSummaryCOdec: CodecJson[WeekSummary]  =
+    casecodec3(WeekSummary.apply, WeekSummary.unapply)("week_beginning", "total", "count")
 }

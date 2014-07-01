@@ -181,7 +181,7 @@ object Storage {
     }
   }
 
-  def byWeek(config: DBConfig): List[DateSummary] = {
+  def byWeek(config: DBConfig): List[WeekSummary] = {
     val q = """SELECT FROM_DAYS(TO_DAYS(date) -MOD(TO_DAYS(date) -1, 7)) AS week_beginning,
           SUM(amount) AS total,
           COUNT(*) AS count
@@ -195,8 +195,8 @@ object Storage {
       "count" -> mkInt
     )
     query(q, resultMap, config) map { row =>
-      DateSummary(
-        DateTime.parse(row.get("week_beginning").fold("")(asString)),
+      WeekSummary(
+        row.get("week_beginning").fold("")(asString),
         row.get("total").fold(0.0)(asDouble),
         row.get("count").fold(0)(asInt)
       )

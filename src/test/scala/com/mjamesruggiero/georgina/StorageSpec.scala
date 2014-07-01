@@ -159,8 +159,8 @@ class StorageSpec extends ScalatraFlatSpec with BeforeAndAfter {
   "#byWeek" should "bin debit sums by calendar week" in {
     val result = Storage.byWeek(TestDatabase)
     val expected = List(
-      DateSummary(DateTime.parse("2014-01-12"),-40.0,2),
-      DateSummary(DateTime.parse("2013-12-08"),-40.0,2)
+      WeekSummary("2014-01-12", -40.0, 2),
+      WeekSummary("2013-12-08", -40.0, 2)
     )
     // crazy that they can't be compared directly; I blame MySql
     expected.toString should equal(result.toString)

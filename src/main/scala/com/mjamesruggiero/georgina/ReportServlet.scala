@@ -31,5 +31,10 @@ class ReportServlet(config: DBConfig)  extends GeorginaStack with ScalateSupport
       case _: Throwable => InternalServerError(GeorginaError("param error", "error: invalid params").asJson)
     }
   }
+
+  get("/byweek") {
+    val rows = Storage.byWeek(config: DBConfig)
+    Ok(rows.asJson)
+  }
 }
 

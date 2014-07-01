@@ -56,4 +56,12 @@ class ReportServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
       response.body should include("2014-05-02")
     }
   }
+
+  "GET /byweek" should "return debits summed, grouped by week" in  {
+    get("/byweek?start=2014-05-01&end=2014-05-30") {
+      status should equal (200)
+      response.body should include("2014-04-27") // the monday of that week
+      response.body should include("-40")
+    }
+  }
 }
