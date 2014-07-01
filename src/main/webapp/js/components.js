@@ -147,6 +147,33 @@ var Components = {
 
     truthy: function(x) {
         return (x !== false) && Components.existy(x);
+    },
+
+    cat: function(/* args */) {
+        var head = _.first(arguments);
+        if (Components.existy(head))
+            return head.concat.apply(head, _.rest(arguments));
+        else
+            return [];
+    },
+
+    construct: function(head, tail) {
+        return Components.cat([head], _.toArray(tail));
+    },
+
+    mapcat: function(fun, coll) {
+        return Components.cat.apply(null, _.map(coll, fun));
+    },
+
+    butLast: function(coll) {
+        return _.toArray(coll.slice(0, -1));
+    },
+
+    interpose: function(inter, coll) {
+        return Components.butLast(Components.mapcat(function(e) {
+            return Components.construct(e, [inter]);
+        },
+        coll));
     }
 
 };

@@ -88,4 +88,41 @@ describe("Components", function() {
         expect(_.uniq(returned)[0]).to.be.false;
     });
   });
+
+  describe("cat", function() {
+    it("returns a concatenated array from the args offered", function(){
+        var returned = Components.cat([1, 2, 3], [4, 5], [6, 7, 8]);
+        expect(returned).to.eql([1, 2, 3, 4, 5, 6, 7, 8]);
+    });
+  });
+
+  describe("construct", function() {
+      it("conses an element to the head of an array", function() {
+          var returned = Components.construct(55, [9, 8, 7]);
+          expect(returned).to.eql([55, 9, 8, 7]);
+      });
+  });
+
+  describe("mapcat", function() {
+      it("calls a function for every element in an array", function() {
+          var returned = Components.mapcat(function(e) {
+              return Components.construct(e, [","]);
+          }, [1, 2, 3]);
+          expect(returned).to.eql([1, ",", 2, ",", 3, ","]);
+      });
+  });
+
+  describe("butLast", function() {
+      it("returns all but the last element of a collection", function(){
+          var returned = Components.butLast([1, 2, 3, 4, 5]);
+          expect(returned).to.eql([1, 2, 3, 4]);
+      });
+  });
+
+  describe("interpose", function() {
+    it("slips an element between existing elements", function() {
+        var returned = Components.interpose("|", [1, 3, 4]);
+        expect(returned).to.eql([1, "|", 3, "|",  4]);
+    });
+  });
 });
