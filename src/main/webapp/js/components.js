@@ -139,5 +139,14 @@ var Components = {
             async: false
             }).responseText;
         return JSON.parse(json);
+    },
+
+    existy: function(x) {
+        return x != null;
+    },
+
+    truthy: function(x) {
+        return (x !== false) && Components.existy(x);
     }
+
 };

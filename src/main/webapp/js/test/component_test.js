@@ -64,4 +64,28 @@ describe("Components", function() {
       expect(returned.length).to.equal(expected.length);
     });
   });
+
+  describe("existy", function() {
+    it("returns true for 'existy' things", function() {
+        var returned = [1, "defined", false].map(Components.existy);
+        expect(_.uniq(returned)[0]).to.be.true;
+    });
+
+    it("returns false for things that are not 'existy'", function() {
+        var returned = [null, undefined, false].map(Components.existy);
+        expect(_.uniq(returned)[0]).to.be.false;
+    });
+  });
+
+  describe("truthy", function() {
+    it("returns true for 'truthy' things", function() {
+        var returned = [1, "defined", 0, ""].map(Components.truthy);
+        expect(_.uniq(returned)[0]).to.be.true;
+    });
+
+    it("returns false for things that are not 'truthy'", function() {
+        var returned = [null, undefined, false].map(Components.truthy);
+        expect(_.uniq(returned)[0]).to.be.false;
+    });
+  });
 });
