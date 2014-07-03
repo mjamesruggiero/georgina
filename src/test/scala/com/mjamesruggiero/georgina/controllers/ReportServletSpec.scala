@@ -1,5 +1,6 @@
-package com.mjamesruggiero.georgina
+package com.mjamesruggiero.georgina.controllers
 
+import com.mjamesruggiero.georgina._
 import com.mjamesruggiero.georgina.config._
 import org.joda.time.DateTime
 import org.scalatest.BeforeAndAfter

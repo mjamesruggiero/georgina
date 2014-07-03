@@ -1,4 +1,4 @@
-package com.mjamesruggiero.georgina
+package com.mjamesruggiero.georgina.controllers
 
 import org.scalatra.test.scalatest._
 import com.mjamesruggiero.georgina.config._

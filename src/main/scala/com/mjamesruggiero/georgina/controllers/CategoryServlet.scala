@@ -1,4 +1,4 @@
-package com.mjamesruggiero.georgina
+package com.mjamesruggiero.georgina.controllers
 
 import com.mjamesruggiero.georgina.config._
 import argonaut._, Argonaut._

@@ -1,12 +1,13 @@
-package com.mjamesruggiero.georgina
+package com.mjamesruggiero.georgina.controllers
 
-import org.scalatra.test.scalatest._
-import org.scalatest.FunSuite
-import org.scalatest.BeforeAndAfter
+import com.mjamesruggiero.georgina._
 import com.mjamesruggiero.georgina.config._
 import org.joda.time.DateTime
-import scala.util.{Success, Failure}
 import org.joda.time.format.DateTimeFormat
+import org.scalatest.BeforeAndAfter
+import org.scalatest.FunSuite
+import org.scalatra.test.scalatest._
+import scala.util.{Success, Failure}
 
 class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
   lazy val config = new TestEnv

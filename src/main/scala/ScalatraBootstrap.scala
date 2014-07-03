@@ -3,6 +3,7 @@ import com.mjamesruggiero.georgina._
 import org.scalatra._
 import javax.servlet.ServletContext
 import com.mjamesruggiero.georgina.config._
+import com.mjamesruggiero.georgina.controllers._
 
 class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {

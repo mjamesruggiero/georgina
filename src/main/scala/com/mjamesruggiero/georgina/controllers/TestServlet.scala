@@ -1,4 +1,4 @@
-package com.mjamesruggiero.georgina
+package com.mjamesruggiero.georgina.controllers
 
 import com.mjamesruggiero.georgina._
 import com.mjamesruggiero.georgina.config._
