@@ -5,10 +5,10 @@ import com.mjamesruggiero.georgina.config._
 import org.scalatra._
 import scalate.ScalateSupport
 
-class IndexServlet(config: DBConfig)  extends GeorginaStack with ScalateSupport {
+class TestController(config: DBConfig)  extends GeorginaStack with ScalateSupport {
 
   get("/") {
     contentType="text/html"
-    ssp("/georgina/index", "subhead" -> "she counts your money", "title" -> "Georgina")
+    ssp("/georgina/test")
   }
 }

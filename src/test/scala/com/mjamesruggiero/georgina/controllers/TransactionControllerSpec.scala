@@ -9,7 +9,7 @@ import org.scalatest.FunSuite
 import org.scalatra.test.scalatest._
 import scala.util.{Success, Failure}
 
-class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
+class TransactionControllerSpec extends ScalatraFlatSpec with BeforeAndAfter {
   lazy val config = new TestEnv
   lazy val earlierDate = DateTime.parse("2014-01-01")
   lazy val laterDate = DateTime.parse("2014-02-01")
@@ -35,7 +35,7 @@ class TransactionServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     }
   }
 
-  addServlet(new TransactionServlet(TestDatabase), "/*")
+  addServlet(new TransactionController(TestDatabase), "/*")
 
   "GET /" should "return 200" in  {
     get("/") {

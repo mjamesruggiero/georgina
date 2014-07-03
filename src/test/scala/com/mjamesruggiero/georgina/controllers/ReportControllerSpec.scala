@@ -8,7 +8,7 @@ import org.scalatest.FunSuite
 import org.scalatra.test.scalatest._
 import scala.util.{Success, Failure}
 
-class ReportServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
+class ReportControllerSpec extends ScalatraFlatSpec with BeforeAndAfter {
   lazy val config = new TestEnv
   lazy val earlierDate = DateTime.parse("2014-05-01")
   lazy val laterDate = DateTime.parse("2014-05-02")
@@ -40,7 +40,7 @@ class ReportServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     }
   }
 
-  addServlet(new ReportServlet(TestDatabase), "/*")
+  addServlet(new ReportController(TestDatabase), "/*")
 
   "GET /byday" should "return 200" in  {
     get("/byday") {

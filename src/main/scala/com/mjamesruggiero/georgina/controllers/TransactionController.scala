@@ -12,7 +12,7 @@ import org.slf4j.{Logger, LoggerFactory}
 import scalate.ScalateSupport
 import scala.util.Try
 
-class TransactionServlet(config: DBConfig)  extends GeorginaStack with ScalateSupport {
+class TransactionController(config: DBConfig)  extends GeorginaStack with ScalateSupport {
 
   val logger =  LoggerFactory.getLogger(getClass)
   import com.mjamesruggiero.georgina.JSONParsers._

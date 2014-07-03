@@ -14,7 +14,7 @@ import scala.util.Try
 
 case class ServletException(message: String) extends Exception(message)
 
-class CategoryServlet(config: DBConfig)  extends GeorginaStack with ScalateSupport {
+class CategoryController(config: DBConfig)  extends GeorginaStack with ScalateSupport {
 
   val logger =  LoggerFactory.getLogger(getClass)
   import com.mjamesruggiero.georgina.JSONParsers._

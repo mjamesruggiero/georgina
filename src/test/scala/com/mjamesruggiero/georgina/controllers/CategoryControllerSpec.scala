@@ -8,7 +8,7 @@ import org.scalatest.FunSuite
 import org.scalatra.test.scalatest._
 import scala.util.{Success, Failure}
 
-class CategoryServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
+class CategoryControllerSpec extends ScalatraFlatSpec with BeforeAndAfter {
   lazy val config = new TestEnv
   lazy val earlierDate = DateTime.parse("2014-01-01")
   lazy val laterDate = DateTime.parse("2014-02-01")
@@ -41,7 +41,7 @@ class CategoryServletSpec extends ScalatraFlatSpec with BeforeAndAfter {
     }
   }
 
-  addServlet(new CategoryServlet(TestDatabase), "/categories/*")
+  addServlet(new CategoryController(TestDatabase), "/categories/*")
 
   "GET /categories/:category" should "retrieve transactions with a category" in {
     get("/categories/medical?start=2014-01-01&end=2014-02-01") {
