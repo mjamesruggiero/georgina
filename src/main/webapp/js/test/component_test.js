@@ -1,5 +1,3 @@
-var expect = chai.expect;
-
 describe("Components", function() {
   describe("numberWithCommas", function() {
     it("adds commas to a six-figured number", function() {
