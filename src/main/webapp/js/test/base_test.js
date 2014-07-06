@@ -10,4 +10,14 @@ describe("Base", function() {
         expect(b.options.monkey).to.equal('capuchin');
     });
   });
+
+  describe("trigger", function() {
+    it("fires an event", function() {
+        var b = new Base('#mocha');
+        var foo = sinon.spy();
+        b.on("click", foo);
+        b.trigger("click");
+        expect(foo).to.have.been.called;
+    });
+  });
 });
