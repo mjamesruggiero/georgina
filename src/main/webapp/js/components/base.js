@@ -19,10 +19,10 @@ Base = Class.extend({
     }
 });
 
-// Custom extend does an automatic extend of defaultOptions
-Base.extend = function ( proto ) {
-    proto.defaultOptions = $.extend( {}, this.prototype.defaultOptions, proto.defaultOptions );
-    var newClass = this._extend( proto );
-    newClass.extend = Base.extend;
-    return newClass;
-};
+//// Custom extend does an automatic extend of defaultOptions
+//Base.extend = function ( proto ) {
+    //proto.defaultOptions = $.extend( {}, this.prototype.defaultOptions, proto.defaultOptions );
+    //var newClass = this._extend( proto );
+    //newClass.extend = Base.extend;
+    //return newClass;
+//};

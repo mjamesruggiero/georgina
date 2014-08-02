@@ -142,7 +142,7 @@ var Components = {
     },
 
     existy: function(x) {
-        return x != null;
+        return x !== null;
     },
 
     truthy: function(x) {
