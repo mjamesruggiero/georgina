@@ -1,5 +1,5 @@
 // named because the app is Georgina;
-// named because "Modal" is already defined in Backbone
+// named because "Modal" is already defined in Bootstrap
 var Gmodal = Base.extend({
     defaultOptions: {
         applyClass: 'show'
@@ -22,7 +22,6 @@ var Gmodal = Base.extend({
     },
 
     apply: function() {
-        console.log("applying", this.options.applyClass, " to ", this.$el);
         this.$el.addClass( this.options.applyClass );
     },
 
