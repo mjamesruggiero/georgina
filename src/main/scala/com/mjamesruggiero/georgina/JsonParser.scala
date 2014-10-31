@@ -1,9 +1,9 @@
 package com.mjamesruggiero.georgina
 
 import argonaut._, Argonaut._
-import org.joda.time.DateTime
 import com.mjamesruggiero.georgina._
 import com.mjamesruggiero.georgina.models._
+import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
 
 case class Report(lines: List[Line])

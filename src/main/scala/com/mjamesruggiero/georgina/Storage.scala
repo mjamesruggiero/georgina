@@ -3,8 +3,8 @@ package com.mjamesruggiero.georgina
 import com.mjamesruggiero.georgina.config._
 import com.mjamesruggiero.georgina.models._
 import org.joda.time.DateTime
-import scalaz.Reader._
 import scala.util.{Success, Failure}
+import scalaz.Reader._
 
 case class QueryException(message:String) extends Exception(message)
 
