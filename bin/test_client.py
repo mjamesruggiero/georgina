@@ -38,7 +38,7 @@ def reformat_date(date_string):
 def reformat_row(row):
     new_row = {}
     new_row['id'] = 0
-    new_row['description'] = row['description']
+    new_row['description'] = row['description'].replace("'", "\\'")
     new_row['date'] = reformat_date(row['date'])
     new_row['category'] = 'unknown'
     new_row['amount'] = float(row['amount'])
